@@ -41,6 +41,8 @@ GEM
     acts-as-taggable-on (4.0.0)
       activerecord (>= 4.0)
     addressable (2.4.0)
+    ae_page_objects (2.0.0)
+      capybara (~> 2.1)
     arel (7.0.0)
     ast (2.3.0)
     autoprefixer-rails (6.4.0.3)
@@ -222,6 +224,7 @@ PLATFORMS
 
 DEPENDENCIES
   acts-as-taggable-on (~> 4.0)
+  ae_page_objects
   bootstrap (~> 4.0.0.alpha3)
   browserify-rails
   byebug
