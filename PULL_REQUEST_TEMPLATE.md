@@ -10,6 +10,7 @@ pull request description.
 - [ ] I have changed the issue's label to "pull request".
 - [ ] I have assigned the designated reviewer to this PR.
 - [ ] I have set the appropriate label on this PR.
+- [ ] I have written clear commit messages ([ref](http://chris.beams.io/posts/git-commit/)).
 
 If needed, please review the document on the
 [Image Sharing Project](https://sites.google.com/a/appfolio.com/eng/new-hire-resources/engineering-academy/ropes/image-sharing-project)
