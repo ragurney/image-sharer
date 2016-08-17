@@ -1,7 +1,7 @@
 {
   "name": "ropes",
   "scripts": {
-    "postdeploy": "rails db:setup"
+    "postdeploy": "rails db:schema:load db:seed"
   },
   "env": {
     "LANG": {
