@@ -2,7 +2,7 @@
 
 <% @image_list.each do |img| %> 
   <div>
-    <img class="home_img" src= <%= img.url %>>
+    <img class="image-tile" src= <%= img.url %>>
   </div>
  <% end %> 
   <%= link_to 'Add New Image', new_image_path %>
