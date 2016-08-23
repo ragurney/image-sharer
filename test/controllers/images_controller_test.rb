@@ -38,7 +38,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     post images_path(image: { url: nil })
 
     assert_response :unprocessable_entity
-    assert_equal 'Url cannot be empty', flash[:error]
+    assert_equal 'Url cannot be empty and must point to an image!', flash[:error]
   end
 
   test 'image index should list all images in db' do

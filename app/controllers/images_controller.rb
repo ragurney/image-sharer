@@ -13,7 +13,7 @@ class ImagesController < ApplicationController
       flash[:success] = 'Url successfully saved!'
       redirect_to image_path(id: @image.id)
     else
-      flash[:error] = 'Url cannot be empty'
+      flash[:error] = 'Url cannot be empty and must point to an image!'
       render :new, status: :unprocessable_entity
     end
   end

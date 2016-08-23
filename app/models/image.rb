@@ -9,7 +9,7 @@ class Image < ActiveRecord::Base
   def url_is_valid
     return unless url.present?
 
-    errors.add(:url, 'must be image') unless
+    errors.add(:url, 'must be a valid url') unless
       (File.extname(url) =~ /^(.png|.gif|.jpg)$/) && (url =~ /^#{URI.regexp}$/)
   end
 end
