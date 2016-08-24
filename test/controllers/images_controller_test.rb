@@ -2,8 +2,8 @@ require 'test_helper'
 
 class ImagesControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @url = 'https://www.google.com/image1'
-    @image = Image.create(url: @url)
+    @url = 'https://www.google.com/image1.jpg'
+    @image = Image.create!(url: @url)
   end
 
   test 'should get images from page' do
@@ -28,17 +28,19 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'controller should create and put correctly' do
-    post images_path(image: { url: @url })
+    assert_difference 'Image.count' do
+      post images_path(image: { url: @url })
+    end
 
     assert_response :found
-    assert_not_nil Image.find_by(url: @url)
   end
 
   test 'invalid url does not create image' do
-    post images_path(image: { url: nil })
+    assert_no_difference 'Image.count' do
+      post images_path(image: { url: nil })
+    end
 
     assert_response :unprocessable_entity
-    assert_equal 'Url cannot be empty and must point to an image!', flash[:error]
   end
 
   test 'image index should list all images in db' do
@@ -48,10 +50,10 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'images are ordered by descending creating time' do
-    @image2 = Image.create(url: 'https://www.google.com/image2', created_at: Time.zone.now - 3.days)
-    @image3 = Image.create(url: 'https://www.google.com/image3', created_at: Time.zone.now - 5.days)
+    @image2 = Image.create(url: 'https://www.google.com/image2.png', created_at: Time.zone.now - 3.days)
+    @image3 = Image.create(url: 'https://www.google.com/image3.png', created_at: Time.zone.now - 5.days)
 
-    urls = %w(https://www.google.com/image1 https://www.google.com/image2 https://www.google.com/image3)
+    urls = %w(https://www.google.com/image1.jpg https://www.google.com/image2.png https://www.google.com/image3.png)
 
     get root_path
 
