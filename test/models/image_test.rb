@@ -22,7 +22,7 @@ class ImageTest < ActiveSupport::TestCase
 
   test 'url invalid with no extension' do
     valid_urls.each do |url|
-      img = Image.new(url: "#{url}")
+      img = Image.new(url: url)
       refute img.valid?
       assert_equal ['must be a valid url'], img.errors.messages[:url]
     end
