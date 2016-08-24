@@ -1,15 +1,9 @@
 require 'uri'
 
 class Image < ActiveRecord::Base
+  URL_REGEX = %r{ \A(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)
+                  *\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?(\/)?(.png|.jpg|.gif)\z }x
+
   validates :url, presence: true
-  validate :url_is_valid
-
-  private
-
-  def url_is_valid
-    return unless url.present?
-
-    errors.add(:url, 'must be a valid url') unless
-      (File.extname(url) =~ /^(.png|.gif|.jpg)$/) && (url =~ /^#{URI.regexp}$/)
-  end
+  validates :url, format: { with: URL_REGEX, message: 'must be a valid url', if: :url? }
 end
