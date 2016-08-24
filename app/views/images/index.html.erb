@@ -1,0 +1,8 @@
+<h1> Images Homepage </h1>  
+
+<% @image_list.each do |img| %> 
+  <div>
+    <%= image_tag(img.url, class: 'image-tile') %>
+  </div>
+ <% end %> 
+  <%= link_to 'Add New Image', new_image_path %>

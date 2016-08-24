@@ -15,6 +15,10 @@ class ImagesFlowTest < FlowTestCase
     assert (has_current_path? image_path(1)), 'should redirect correctly'
     assert has_css?("img[src='#{@valid_url}']"), 'should display correct image'
     assert page.has_content?('Url successfully saved!'), 'should show success flash message'
+
+    visit(root_path)
+    assert (has_current_path? root_path), 'root path should exist'
+    assert has_css?("img[src='#{@valid_url}']"), 'home page should list added image'
   end
 
   test 'add invalid (null) url, should redirect to new and show error' do
@@ -23,5 +27,9 @@ class ImagesFlowTest < FlowTestCase
 
     assert page.has_content?('Url cannot be empty'), 'should show correct error message'
     assert has_css?("form[action='/images']"), 'should have new image form'
+
+    visit(root_path)
+    assert (has_current_path? root_path), 'root path should exist'
+    refute has_css?("img[src='#{@valid_url}']"), 'home page should not list image with invalid url'
   end
 end
