@@ -11,9 +11,8 @@ class ImagesController < ApplicationController
     @image = Image.new(image_params)
     if @image.save
       flash[:success] = 'Url successfully saved!'
-      redirect_to image_path(id: @image.id)
+      redirect_to image_path(@image)
     else
-      flash[:error] = 'Url cannot be empty'
       render :new, status: :unprocessable_entity
     end
   end

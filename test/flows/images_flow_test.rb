@@ -10,7 +10,7 @@ class ImagesFlowTest < FlowTestCase
     visit(new_image_path)
 
     fill_in('image[url]', with: @valid_url)
-    click_button('Save Image')
+    click_button('Upload Image')
 
     assert (has_current_path? image_path(1)), 'should redirect correctly'
     assert has_css?("img[src='#{@valid_url}']"), 'should display correct image'
@@ -23,9 +23,9 @@ class ImagesFlowTest < FlowTestCase
 
   test 'add invalid (null) url, should redirect to new and show error' do
     visit(new_image_path)
-    click_button('Save Image')
+    click_button('Upload Image')
 
-    assert page.has_content?('Url cannot be empty'), 'should show correct error message'
+    assert page.has_content?("can't be blank"), 'should show correct error message'
     assert has_css?("form[action='/images']"), 'should have new image form'
 
     visit(root_path)
