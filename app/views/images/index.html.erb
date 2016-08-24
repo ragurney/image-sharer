@@ -2,7 +2,7 @@
 
 <% @image_list.each do |img| %> 
   <div>
-    <img class="image-tile" src= <%= img.url %>>
+    <%= image_tag(img.url, class: 'image-tile') %>
   </div>
  <% end %> 
   <%= link_to 'Add New Image', new_image_path %>
