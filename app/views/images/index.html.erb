@@ -1,8 +1,10 @@
 <h1> Images Homepage </h1>  
 
-<% @image_list.each do |image| %> 
-  <div>
-    <%= image_tag(image.url, class: 'image-tile') %>
-  </div>
- <% end %> 
+<div class="card-group">
+  <% @image_list.each do |img| %> 
+    <div class="text-xs-center card">
+      <%= image_tag(img.url, class: 'card-img image-tile img-circle') %>
+    </div>
+   <% end %> 
+</div>
   <%= link_to 'Add New Image', new_image_path %>

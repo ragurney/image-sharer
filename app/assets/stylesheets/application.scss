@@ -1,7 +1,5 @@
-@import "bootstrap";
-@import "image-tile";
-@import "bootstrap";
+$enable-flex: true;
 
-body{
-  margin-top: 4rem;
-}
+@import "bootstrap";
+@import "base";
+@import "image-tile";
