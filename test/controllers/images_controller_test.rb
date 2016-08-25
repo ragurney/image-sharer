@@ -27,18 +27,38 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'The image you were looking for was not found!', response.body
   end
 
-  test 'controller should create and put correctly' do
+  test 'controller should create and put correctly (just image)' do
     assert_difference 'Image.count' do
-      post images_path(image: { url: @url })
+      post images_path(image: { url: @url, tag_list: nil })
     end
 
     assert_response :found
     assert_equal 'Url successfully saved!', flash[:success]
   end
 
+  test 'controller should create and put correctly (image and tags)' do
+    assert_difference 'Image.count' do
+      post images_path(image: { url: @url, tag_list: 'tag1, tag2, tag3' })
+    end
+
+    assert_response :found
+  end
+
+  test 'should show image with tags upon create' do
+    tags = %w(tag1 tag2 tag3)
+    image = Image.create!(url: @url, tag_list: tags.join(', '))
+    get image_path(image)
+
+    assert_select 'span.image-tag', 3 do |spans|
+      spans.each_with_index do |span, i|
+        assert_equal tags[i], span.text
+      end
+    end
+  end
+
   test 'invalid url does not create image' do
     assert_no_difference 'Image.count' do
-      post images_path(image: { url: nil })
+      post images_path(image: { url: nil, tag_list: nil })
     end
 
     assert_response :unprocessable_entity

@@ -25,7 +25,7 @@ gem 'jbuilder', '~> 2.5'
 gem 'simple_form', '3.2.1'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
-
+gem 'acts-as-taggable-on', '~> 4.0'
 gem 'bootstrap', '~> 4.0.0.alpha3'
 
 gem 'validate_url'

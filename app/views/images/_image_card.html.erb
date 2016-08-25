@@ -1,0 +1,8 @@
+<div class="text-xs-center card">
+  <%= image_tag(image.url, class: 'card-img image-tile img-circle') %>
+  <div class="card-block" >
+    <% image.tags.each do |tag| %>
+        <span class="tag tag-default image-tag"><%= tag.name %></span>
+    <% end %>
+  </div>
+</div>
