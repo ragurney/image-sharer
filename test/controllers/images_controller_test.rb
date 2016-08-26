@@ -3,7 +3,6 @@ require 'test_helper'
 class ImagesControllerTest < ActionDispatch::IntegrationTest
   setup do
     @url = 'https://www.google.com/image1.jpg'
-    @image = Image.create!(url: @url)
   end
 
   test 'should get images from page' do
@@ -14,7 +13,8 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should show correct image' do
-    get image_path(@image)
+    image = Image.create!(url: @url)
+    get image_path(image)
 
     assert_response :ok
     assert_select 'img', 1
@@ -46,13 +46,23 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
 
   test 'image index should list all images in db' do
     get root_path
+
     assert_response :ok
     assert_select 'img', Image.all.length
   end
 
+  test 'no images in db' do
+    get root_path
+
+    assert_response :ok
+    assert_select 'img', 0
+    assert_select 'h1', 1, 'Images Homepage'
+  end
+
   test 'images are ordered by descending creating time' do
-    @image2 = Image.create(url: 'https://www.google.com/image2.png', created_at: Time.zone.now - 3.days)
-    @image3 = Image.create(url: 'https://www.google.com/image3.png', created_at: Time.zone.now - 5.days)
+    Image.create!(url: @url)
+    Image.create!(url: 'https://www.google.com/image2.png', created_at: Time.zone.now - 3.days)
+    Image.create!(url: 'https://www.google.com/image3.png', created_at: Time.zone.now - 5.days)
 
     urls = %w(https://www.google.com/image1.jpg https://www.google.com/image2.png https://www.google.com/image3.png)
 
