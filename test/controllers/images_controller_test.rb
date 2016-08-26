@@ -33,6 +33,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :found
+    assert_equal 'Url successfully saved!', flash[:success]
   end
 
   test 'invalid url does not create image' do
