@@ -19,7 +19,7 @@ class ImagesController < ApplicationController
 
   def show
     @image = Image.find(params['id'])
-  rescue ActiveRecord::RecordNotFound => _e
+  rescue ActiveRecord::RecordNotFound
     render plain: 'The image you were looking for was not found!', status: :not_found
   end
 
