@@ -30,6 +30,6 @@ class ImagesFlowTest < FlowTestCase
 
     visit(root_path)
     assert (has_current_path? root_path), 'root path should exist'
-    refute has_css?("img[src='#{@valid_url}']"), 'home page should not list image with invalid url'
+    assert has_no_css?("img[src='#{@valid_url}']"), 'home page should not list image with invalid url'
   end
 end

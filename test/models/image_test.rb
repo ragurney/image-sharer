@@ -12,14 +12,14 @@ class ImageTest < ActiveSupport::TestCase
   end
 
   test 'url invalid with empty string' do
-    img = Image.new(url: '')
-    refute img.valid?
-    assert_equal ["can't be blank"], img.errors.messages[:url]
+    image = Image.new(url: '')
+    assert_predicate image, :invalid?
+    assert_equal ["can't be blank"], image.errors.messages[:url]
   end
 
   test 'url invalid null' do
-    img = Image.new
-    refute img.valid?
-    assert_equal ["can't be blank"], img.errors.messages[:url]
+    image = Image.new
+    assert_predicate image, :invalid?
+    assert_equal ["can't be blank"], image.errors.messages[:url]
   end
 end
