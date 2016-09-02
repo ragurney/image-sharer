@@ -19,6 +19,9 @@ class ImagesFlowTest < FlowTestCase
     visit(root_path)
     assert (has_current_path? root_path), 'root path should exist'
     assert has_css?("img[src='#{@valid_url}']"), 'home page should list added image'
+
+    click_link('Delete')
+    assert has_no_css?("img[src='#{@valid_url}']")
   end
 
   test 'add invalid (null) url, should redirect to new and show error' do
