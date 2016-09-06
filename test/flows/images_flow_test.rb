@@ -6,7 +6,7 @@ class ImagesFlowTest < FlowTestCase
     @invalid_url = 'asdf https://oh_no.this/?is_not_valid'
   end
 
-  test 'add valid image and display' do
+  test 'add valid image and display, then check deletion functionality' do
     visit(new_image_path)
 
     fill_in('image[url]', with: @valid_url)
@@ -21,6 +21,14 @@ class ImagesFlowTest < FlowTestCase
     assert has_css?("img[src='#{@valid_url}']"), 'home page should list added image'
 
     click_link('Delete')
+    dialog = page.driver.browser.switch_to.alert
+    assert_equal 'Are you sure you want to delete this image?', dialog.text
+    dialog.dismiss
+    assert has_css?("img[src='#{@valid_url}']"), 'home page should still have image'
+
+    click_link('Delete')
+    dialog = page.driver.browser.switch_to.alert
+    dialog.accept
     assert has_no_css?("img[src='#{@valid_url}']")
   end
 
