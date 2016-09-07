@@ -23,8 +23,8 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
   test 'should show error for incorrect image' do
     get image_path(id: -1)
 
-    assert_response :not_found
-    assert_equal 'The image you were looking for was not found!', response.body
+    assert_redirected_to images_path
+    assert_equal 'The image you were looking for does not exist', flash[:error]
   end
 
   test 'controller should create and put correctly (just image)' do
@@ -124,6 +124,15 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     end
     assert_redirected_to images_path
     assert_equal 'Image successfully deleted!', flash[:success]
+  end
+
+  test 'delete nonexistent image redirects correctly' do
+    image = Image.create!(url: 'https://static.pexels.com/photos/7919/pexels-photo.jpg')
+    image.destroy
+
+    delete image_path(image)
+    assert_redirected_to images_path
+    assert_equal 'The image you were looking for does not exist', flash[:danger]
   end
 
   private

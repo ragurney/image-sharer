@@ -1,4 +1,6 @@
 class ImagesController < ApplicationController
+  before_action :set_image, only: [:show, :destroy]
+
   def index
     @image_list = ImageSelector.select params[:tag]
   end
@@ -18,14 +20,10 @@ class ImagesController < ApplicationController
   end
 
   def show
-    @image = Image.find(params['id'])
-  rescue ActiveRecord::RecordNotFound
-    render plain: 'The image you were looking for was not found!', status: :not_found
   end
 
   def destroy
-    image = Image.find(params['id'])
-    image.destroy
+    @image.destroy
     flash[:success] = 'Image successfully deleted!'
     redirect_to images_path
   end
@@ -34,5 +32,14 @@ class ImagesController < ApplicationController
 
   def image_params
     params.require(:image).permit(:url, :tag_list)
+  end
+
+  def set_image
+    if (@image = Image.find_by(id: params[:id]))
+      @image
+    else
+      flash[:error] = 'The image you were looking for does not exist'
+      redirect_to images_path
+    end
   end
 end
