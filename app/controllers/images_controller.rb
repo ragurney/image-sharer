@@ -1,5 +1,5 @@
 class ImagesController < ApplicationController
-  before_action :set_image, only: [:show, :share_new, :destroy]
+  before_action :set_image, only: [:show, :share_new, :share_send, :destroy]
 
   def index
     @image_list = ImageSelector.select params[:tag]
@@ -25,6 +25,18 @@ class ImagesController < ApplicationController
   def share_new
   end
 
+  def share_send
+    email_info = email_params
+
+    ImageMailer.send_share_email(email_info[:email_address], email_info[:message], @image.url).deliver_now
+  rescue ArgumentError
+    flash[:error] = 'Email cannot be null!'
+    render :share_new, status: :unprocessable_entity
+  else
+    flash[:success] = 'Image successfully sent!'
+    redirect_to root_path
+  end
+
   def destroy
     @image.destroy
     flash[:success] = 'Image successfully deleted!'
@@ -35,6 +47,10 @@ class ImagesController < ApplicationController
 
   def image_params
     params.require(:image).permit(:url, :tag_list)
+  end
+
+  def email_params
+    params.require(:email_info).permit(:email_address, :message)
   end
 
   def set_image

@@ -109,6 +109,45 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'The image you were looking for does not exist', flash[:danger]
   end
 
+  test 'share_send action email' do
+    image = Image.create!(url: 'https://example.com')
+    assert_difference 'ActionMailer::Base.deliveries.size', +1 do
+      post share_send_image_path(image), params: { email_info: { email_address: 'example@example.com',
+                                                                 message: 'Hi!' } }
+    end
+    assert_response :found
+    assert_equal 'Image successfully sent!', flash[:success]
+
+    share_email = ActionMailer::Base.deliveries.last
+    assert_equal 'Image Shared from Image-Sharer!', share_email.subject
+    assert_equal 'example@example.com', share_email.to[0]
+
+    ['Hello from Image Sharer!', image.url, 'Hi!'].each do |value|
+      assert_match value, share_email.html_part.to_s
+      assert_match value, share_email.text_part.to_s
+    end
+  end
+
+  test 'share_send action no email error' do
+    image = Image.create!(url: 'https://example.com')
+    assert_difference 'ActionMailer::Base.deliveries.size', 0 do
+      post share_send_image_path(image), params: { email_info: { email_address: '',
+                                                                 message: '' } }
+    end
+    assert_response :unprocessable_entity
+    assert_equal 'Email cannot be null!', flash[:error]
+  end
+
+  test 'share_send action image does not exist' do
+    image = Image.create!(url: 'https://example.com')
+    image.destroy
+    assert_difference 'ActionMailer::Base.deliveries.size', 0 do
+      post share_send_image_path(image, share_form: { email_address: 'valid@valid.com', message: 'Hi!' })
+    end
+    assert_redirected_to images_path
+    assert_equal 'The image you were looking for does not exist', flash[:error]
+  end
+
   test 'images are ordered by descending creating time' do
     urls = create_images.map(&:url)
 
