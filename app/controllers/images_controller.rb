@@ -1,5 +1,5 @@
 class ImagesController < ApplicationController
-  before_action :set_image, only: [:show, :destroy]
+  before_action :set_image, only: [:show, :share_new, :destroy]
 
   def index
     @image_list = ImageSelector.select params[:tag]
@@ -20,6 +20,9 @@ class ImagesController < ApplicationController
   end
 
   def show
+  end
+
+  def share_new
   end
 
   def destroy

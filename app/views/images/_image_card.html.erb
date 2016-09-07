@@ -9,9 +9,10 @@
         <% end %>
     <% end %>
     <div class="card-block">
-    <%= link_to 'Delete', image_path(image), method: :delete,
-                class: "js-delete-image btn btn-danger",
-                'data-confirm': 'Are you sure you want to delete this image?'%>
-  </div>
+      <%= link_to 'Share', share_new_image_path(image), class: "btn btn-info" %>
+      <%= link_to 'Delete', image_path(image), method: :delete,
+                  class: "js-delete-image btn btn-danger",
+                  'data-confirm': 'Are you sure you want to delete this image?'%>
+    </div>
   </div>
 </div>

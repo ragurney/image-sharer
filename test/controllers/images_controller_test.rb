@@ -89,6 +89,26 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     assert_select 'h1', 1, 'Images Homepage'
   end
 
+  test 'share new displays correct form' do
+    image = Image.create!(url: 'https://static.pexels.com/photos/7919/pexels-photo.jpg')
+    get share_new_image_path(image)
+
+    assert_response :ok
+    assert_select 'img', 1
+    assert_select 'form[action=?]', share_send_image_path(image)
+    assert_select 'img[src=?]', 'https://static.pexels.com/photos/7919/pexels-photo.jpg'
+    assert_select 'h1', 1, 'Share Your Image'
+  end
+
+  test 'share new missing image displays correct flash message and redirects' do
+    image = Image.create!(url: 'https://static.pexels.com/photos/7919/pexels-photo.jpg')
+    image.destroy
+
+    get share_new_image_path(image)
+    assert_redirected_to images_path
+    assert_equal 'The image you were looking for does not exist', flash[:danger]
+  end
+
   test 'images are ordered by descending creating time' do
     urls = create_images.map(&:url)
 
