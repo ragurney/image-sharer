@@ -22,4 +22,13 @@ class ImageTest < ActiveSupport::TestCase
     assert_predicate image, :invalid?
     assert_equal ["can't be blank"], image.errors.messages[:url]
   end
+
+  test 'check image with url and tag valid' do
+    tags = %w(tag1 tag2 tag3)
+    image = Image.new(url: 'https://thisis.com/?stuff.png', tag_list: tags.join(', '))
+    assert_predicate image, :valid?
+    image.tag_list.each_with_index do |tag, i|
+      assert_equal tags[i], tag
+    end
+  end
 end

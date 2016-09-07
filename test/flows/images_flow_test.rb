@@ -32,4 +32,23 @@ class ImagesFlowTest < FlowTestCase
     assert (has_current_path? root_path), 'root path should exist'
     assert has_no_css?("img[src='#{@valid_url}']"), 'home page should not list image with invalid url'
   end
+
+  test 'first add tags with invalid url, then add image with tags and confirm tag presence' do
+    tags = %w(cool car stuff)
+
+    visit(new_image_path)
+
+    fill_in('image[url]', with: @invalid_url)
+    fill_in('image[tag_list]', with: tags.join(', '))
+    click_button('Upload Image')
+    assert_equal tags.join(', '), find_field('image[tag_list]').value
+
+    fill_in('image[url]', with: @valid_url)
+    click_button('Upload Image')
+
+    assert has_css?('.image-tag', count: 3)
+    find_all('.image-tag').each_with_index do |span, i|
+      assert_equal tags[i], span.text
+    end
+  end
 end
