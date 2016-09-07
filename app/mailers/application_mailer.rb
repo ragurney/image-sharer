@@ -1,4 +1,4 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: 'from@example.com'
+  default from: 'Image-Tiles <donotreply@appfolio.com>'
   layout 'mailer'
 end

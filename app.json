@@ -24,6 +24,9 @@
     },
     "SENDGRID_PASSWORD": {
       "required": true
+    },
+    "MAIL_HOST": {
+      "required": true
     }
   },
   "addons": [

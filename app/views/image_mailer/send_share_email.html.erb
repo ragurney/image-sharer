@@ -1,0 +1,14 @@
+<h1>Hello from Image Sharer!</h1>
+<p>
+  You have been sent an image!
+</p>
+<% if @message.present? %>
+    <p>Your friend said:</p>
+    <p><%= @message %></p>
+<% end %>
+<%= image_tag @url %>
+<p>Thanks for viewing and have a great day!</p>
+
+<p style="opacity: 0.5;"> Want to see more images? Check out our <%= link_to 'website',
+                                                                          root_url %>
+</p>
