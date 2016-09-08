@@ -23,6 +23,12 @@ class ImagesController < ApplicationController
     render plain: 'The image you were looking for was not found!', status: :not_found
   end
 
+  def destroy
+    image = Image.find(params['id'])
+    image.destroy
+    render json: { image_id: image.id }
+  end
+
   private
 
   def image_params

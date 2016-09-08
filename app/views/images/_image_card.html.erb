@@ -1,8 +1,14 @@
-<div class="text-xs-center card">
+<div class="text-xs-center card" data-image-id="<%= image.id %>">
   <%= image_tag(image.url, class: 'card-img image-tile img-circle') %>
-  <div class="card-block" >
+  <div class = "card-block">
     <% image.tags.each do |tag| %>
         <span class="tag tag-default image-tag"><%= tag.name %></span>
     <% end %>
+    <div class="card-block">
+    <%= link_to 'Delete', image_path(image), method: :delete,
+                class: "js-delete-image btn btn-danger",
+                remote: true,
+                'data-confirm': 'Are you sure you want to delete this image?'%>
+  </div>
   </div>
 </div>

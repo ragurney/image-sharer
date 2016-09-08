@@ -95,4 +95,16 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
       end
     end
   end
+
+  test 'delete removes image successfully' do
+    image = Image.create!(url: 'https://www.google.com/image2.png')
+
+    assert_difference 'Image.count', -1 do
+      delete image_path(image)
+    end
+    assert_response :ok
+
+    response_hash = JSON.parse(@response.body)
+    assert_equal({ 'image_id' => image.id }, response_hash)
+  end
 end
