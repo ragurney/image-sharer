@@ -1,0 +1,14 @@
+<h1>Sign up</h1>
+
+<div class="row">
+  <div class="col-xs-6">
+    <%= simple_form_for @user do |f| %>
+        <%= f.error_notification  %>
+
+        <%= f.input :email, label: 'Enter Email', input_html: { placeholder: 'Enter email'} %>
+        <%= f.input :password, label: 'Password', placeholder: 'Enter password' %>
+        <%= f.input :password_confirmation, label: 'Confirm password', placeholder: 'Confirm password' %>
+        <%= f.button :submit, 'Sign up', class: 'btn btn-primary' %>
+    <% end %>
+  </div>
+</div>

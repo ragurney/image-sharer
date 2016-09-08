@@ -7,5 +7,6 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :users, only: [:new]
   root 'images#index'
 end
