@@ -1,6 +1,6 @@
 class ImagesController < ApplicationController
   def index
-    @image_list = Image.order(created_at: :desc)
+    @image_list = ImageSelector.select params[:tag]
   end
 
   def new
