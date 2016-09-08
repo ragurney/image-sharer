@@ -43,4 +43,11 @@ ActiveRecord::Schema.define(version: 20161003224551) do
     t.index ["name"], name: "index_tags_on_name", unique: true
   end
 
+  create_table "users", force: :cascade do |t|
+    t.string   "email",           null: false
+    t.string   "password_digest", null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
 end
