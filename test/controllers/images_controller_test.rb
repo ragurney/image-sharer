@@ -64,15 +64,25 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
   end
 
-  test 'image index should list all images in db' do
-    get root_path
+  test 'image index with no selected tag' do
+    get images_path
 
     assert_response :ok
     assert_select 'img', Image.all.length
   end
 
+  test 'image index with tag selected' do
+    create_images
+
+    get images_path tag: 'tag3'
+    assert_response :ok
+
+    assert_select 'span[text()="tag3"]', 2
+    assert_select '.card', 2
+  end
+
   test 'no images in db' do
-    get root_path
+    get images_path
 
     assert_response :ok
     assert_select 'img', 0
@@ -80,16 +90,13 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'images are ordered by descending creating time' do
-    Image.create!(url: @url)
-    Image.create!(url: 'https://www.google.com/image2.png', created_at: Time.zone.now - 3.days)
-    Image.create!(url: 'https://www.google.com/image3.png', created_at: Time.zone.now - 5.days)
+    urls = create_images.map(&:url)
 
-    urls = %w(https://www.google.com/image1.jpg https://www.google.com/image2.png https://www.google.com/image3.png)
+    get images_path
 
-    get root_path
-
-    assert_select 'img', 3
-    assert_select 'img' do |images|
+    assert_response :ok
+    assert_select 'img', 4
+    assert_select 'img', class: /image-tile/ do |images|
       images.each_with_index do |_img, i|
         assert_select '[src=?]', urls[i]
       end
@@ -106,5 +113,17 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
 
     response_hash = JSON.parse(@response.body)
     assert_equal({ 'image_id' => image.id }, response_hash)
+  end
+
+  private
+
+  def create_images
+    Image.create!([{ url: @url, tag_list: nil },
+                   { url: 'http://www.validurl.com/image.png', tag_list: 'tag1, tag2, tag3',
+                     created_at: Time.zone.now - 3.days },
+                   { url: 'http://www.validurl.com/image1.png', tag_list: 'tag1, tag2',
+                     created_at: Time.zone.now - 2.days },
+                   { url: 'http://www.validurl.com/image1.png', tag_list: 'tag1, tag3',
+                     created_at: Time.zone.now - 1.day }])
   end
 end

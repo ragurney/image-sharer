@@ -16,8 +16,8 @@ class ImagesFlowTest < FlowTestCase
     assert has_css?("img[src='#{@valid_url}']"), 'should display correct image'
     assert page.has_content?('Url successfully saved!'), 'should show success flash message'
 
-    visit(root_path)
-    assert (has_current_path? root_path), 'root path should exist'
+    visit(images_path)
+    assert (has_current_path? images_path), 'root path should exist'
     assert has_css?("img[src='#{@valid_url}']"), 'home page should list added image'
 
     click_link('Delete')
@@ -39,9 +39,28 @@ class ImagesFlowTest < FlowTestCase
     assert page.has_content?("can't be blank"), 'should show correct error message'
     assert has_css?("form[action='/images']"), 'should have new image form'
 
-    visit(root_path)
-    assert (has_current_path? root_path), 'root path should exist'
+    visit(images_path)
+    assert (has_current_path? images_path), 'root path should exist'
     assert has_no_css?("img[src='#{@valid_url}']"), 'home page should not list image with invalid url'
+  end
+
+  test 'create images with different tags then check for correct filtering' do
+    visit(new_image_path)
+    fill_in('image[url]', with: @valid_url)
+    fill_in('image[tag_list]', with: 'tag1, tag3')
+    click_button('Upload Image')
+    visit(new_image_path)
+    fill_in('image[url]', with: @valid_url + '1')
+    fill_in('image[tag_list]', with: 'tag1, tag2')
+    click_button('Upload Image')
+    visit(new_image_path)
+    fill_in('image[url]', with: @valid_url + '2')
+    fill_in('image[tag_list]', with: '')
+    click_button('Upload Image')
+
+    visit(images_path)
+    click_link('tag2')
+    assert has_css?("img[src='#{@valid_url}1']")
   end
 
   test 'first add tags with invalid url, then add image with tags and confirm tag presence' do
