@@ -1,6 +1,6 @@
 <h1> Images Homepage </h1>  
 
-<div class="card-group">
+<div id="images_list" class="card-group">
   <% @image_list.each do |img| %> 
     <%= render 'image_card', image: img %>
    <% end %> 
