@@ -3,28 +3,29 @@ module PageObjects
     class ShowPage < PageObjects::Document
       path :image
 
-      def has_url?(url)
-        #TODO
+      def url?(url)
+        node.find("img[src=\"#{url}\"]").present?
       end
 
       def tags
-        #TODO
+        node.all('.image-tag').map(&:text)
       end
 
       def delete
-        #TODO
+        node.click_on('Delete')
         yield node.driver.browser.switch_to.alert
       end
 
       def delete_and_confirm!
-        #TODO
+        node.click_on('Delete')
         alert = node.driver.browser.switch_to.alert
         alert.accept
         window.change_to(IndexPage)
       end
 
       def go_back_to_index!
-        #TODO
+        node.click_on('Image-Tiles')
+        window.change_to(IndexPage)
       end
     end
   end
