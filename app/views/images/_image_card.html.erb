@@ -1,15 +1,13 @@
 <div class="js-image-card-container text-xs-center card" data-image-id="<%= image.id %>">
   <%= link_to image_tag(image.url, class: 'card-img image-tile img-circle'),
               image_path(id: image.id),
-              class: 'link_to_image'%>
-  <div class = "card-block">
-    <div class="js-image-tags">
-      <% image.tags.each do |tag| %>
-          <%= link_to images_path(tag: tag.name) do%>
-            <span class="tag tag-default image-tag"><%= tag.name %></span>
-          <% end %>
-      <% end %>
-    </div>
+              class: 'js-image-link'%>
+  <div class="card-block js-image-tags">
+    <% image.tags.each do |tag| %>
+        <%= link_to images_path(tag: tag.name) do%>
+          <span class="tag tag-default image-tag"><%= tag.name %></span>
+        <% end %>
+    <% end %>
     <div class="card-block">
     <%= link_to 'Delete', image_path(image), method: :delete,
                 class: "js-delete-image btn btn-danger",
