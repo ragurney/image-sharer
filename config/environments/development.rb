@@ -26,6 +26,17 @@ Rails.application.configure do
     config.cache_store = :null_store
   end
 
+  csp_settings = ["connect-src 'self'",
+                  "default-src 'none'",
+                  "font-src https://cdn.jsdelivr.net 'self'",
+                  "img-src 'self' http: https:",
+                  "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
+                  "frame-src 'self'",
+                  "style-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'"]
+  config.action_dispatch.default_headers = {
+    'Content-Security-Policy' => csp_settings.join(';')
+  }
+
   # Don't care if the mailer can't send.
   # config.action_mailer.raise_delivery_errors = false
   # config.action_mailer.perform_caching = false
