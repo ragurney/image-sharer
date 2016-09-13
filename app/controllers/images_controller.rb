@@ -28,7 +28,8 @@ class ImagesController < ApplicationController
   def share_send
     email_info = email_params
 
-    ImageMailer.send_share_email(email_info[:email_address], email_info[:message], @image.url).deliver_now
+    ImageMailer.send_share_email(email_address: email_info[:email_address], message: email_info[:message],
+                                 url: @image.url).deliver_now
   rescue ArgumentError
     flash[:error] = 'Email cannot be null!'
     render :share_new, status: :unprocessable_entity

@@ -2,7 +2,9 @@ require 'test_helper'
 
 class ImageMailerTest < ActionMailer::TestCase
   test 'test share email functionality' do
-    email = ImageMailer.send_share_email('me@example.com', 'Hello!', 'https://isexample.com/image.png')
+    email = ImageMailer.send_share_email(email_address: 'me@example.com',
+                                         message: 'Hello!',
+                                         url: 'https://isexample.com/image.png')
 
     assert_emails 1 do
       email.deliver_now

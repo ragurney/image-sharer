@@ -1,5 +1,5 @@
 class ImageMailer < ApplicationMailer
-  def send_share_email(email_address, message, url)
+  def send_share_email(email_address:, message:, url:)
     @message = message
     @url = url
 
