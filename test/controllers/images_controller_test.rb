@@ -109,10 +109,8 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     assert_difference 'Image.count', -1 do
       delete image_path(image)
     end
-    assert_response :ok
-
-    response_hash = JSON.parse(@response.body)
-    assert_equal({ 'image_id' => image.id }, response_hash)
+    assert_redirected_to images_path
+    assert_equal 'Image successfully deleted!', flash[:success]
   end
 
   private

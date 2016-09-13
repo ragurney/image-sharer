@@ -26,7 +26,8 @@ class ImagesController < ApplicationController
   def destroy
     image = Image.find(params['id'])
     image.destroy
-    render json: { image_id: image.id }
+    flash[:success] = 'Image successfully deleted!'
+    redirect_to images_path
   end
 
   private
