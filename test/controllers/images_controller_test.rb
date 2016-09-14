@@ -103,6 +103,19 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test 'check images have delete button and correct link' do
+    image_ids = create_images.map(&:id)
+
+    get images_path
+
+    assert_response :ok
+    assert_select '.js-delete-image', 4 do |links|
+      links.each_with_index do |link, index|
+        assert_equal "/images/#{image_ids[index]}", link[:href]
+      end
+    end
+  end
+
   test 'delete removes image successfully' do
     image = Image.create!(url: 'https://www.google.com/image2.png')
 
@@ -117,11 +130,11 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
 
   def create_images
     Image.create!([{ url: @url, tag_list: nil },
-                   { url: 'http://www.validurl.com/image.png', tag_list: 'tag1, tag2, tag3',
-                     created_at: Time.zone.now - 3.days },
+                   { url: 'http://www.validurl.com/image1.png', tag_list: 'tag1, tag3',
+                     created_at: Time.zone.now - 1.day },
                    { url: 'http://www.validurl.com/image1.png', tag_list: 'tag1, tag2',
                      created_at: Time.zone.now - 2.days },
-                   { url: 'http://www.validurl.com/image1.png', tag_list: 'tag1, tag3',
-                     created_at: Time.zone.now - 1.day }])
+                   { url: 'http://www.validurl.com/image.png', tag_list: 'tag1, tag2, tag3',
+                     created_at: Time.zone.now - 3.days }])
   end
 end
