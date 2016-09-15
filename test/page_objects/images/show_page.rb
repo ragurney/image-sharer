@@ -17,9 +17,7 @@ module PageObjects
       end
 
       def delete_and_confirm!
-        node.click_on('Delete')
-        alert = node.driver.browser.switch_to.alert
-        alert.accept
+        delete(&:accept)
         window.change_to(IndexPage)
       end
 
