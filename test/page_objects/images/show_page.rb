@@ -3,22 +3,18 @@ module PageObjects
     class ShowPage < PageObjects::Document
       path :image
 
+      element :image,
+              locator: '.js-image-card-container',
+              is: ImageCard
+
+      delegate :delete, :delete_and_confirm!, to: :image
+
       def image_url
         node.find('img')[:src]
       end
 
       def tags
         node.all('.image-tag').map(&:text)
-      end
-
-      def delete
-        node.click_on('Delete')
-        yield node.driver.browser.switch_to.alert
-      end
-
-      def delete_and_confirm!
-        delete(&:accept)
-        window.change_to(IndexPage)
       end
 
       def go_back_to_index!

@@ -11,19 +11,6 @@ module PageObjects
           node.find('.js-image-link').click
           window.change_to(ShowPage)
         end
-
-        def delete_image!
-          node.click_on('Delete')
-          yield node.session.driver.browser.switch_to.alert
-          window.change_to(IndexPage)
-        end
-
-        def delete_image_and_confirm!
-          node.click_on('Delete')
-          alert = node.session.driver.browser.switch_to.alert
-          alert.accept
-          window.change_to(IndexPage)
-        end
       end
 
       def add_new_image!

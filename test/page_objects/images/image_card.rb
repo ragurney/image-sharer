@@ -13,6 +13,16 @@ module PageObjects
         node.find("a[href=\"/images?tag=#{tag_name}\"]").click
         window.change_to(IndexPage)
       end
+
+      def delete
+        node.click_on('Delete')
+        yield node.session.driver.browser.switch_to.alert
+      end
+
+      def delete_and_confirm!
+        delete(&:accept)
+        window.change_to(IndexPage)
+      end
     end
   end
 end
