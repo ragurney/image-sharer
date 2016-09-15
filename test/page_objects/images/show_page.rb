@@ -3,8 +3,8 @@ module PageObjects
     class ShowPage < PageObjects::Document
       path :image
 
-      def url?(url)
-        node.find("img[src=\"#{url}\"]").present?
+      def image_url
+        node.find('img')[:src]
       end
 
       def tags

@@ -24,7 +24,7 @@ class ImagesCrudTest < FlowTestCase
     image_show_page = new_image_page.create_image!
     assert_equal 'Url successfully saved!', image_show_page.flash_message(:success)
 
-    assert image_show_page.url?(image_url)
+    assert_equal image_url, image_show_page.image_url
     assert_equal tags, image_show_page.tags
 
     images_index_page = image_show_page.go_back_to_index!
@@ -53,7 +53,7 @@ class ImagesCrudTest < FlowTestCase
       assert_equal 'Are you sure you want to delete this image?', confirm_dialog.text
       confirm_dialog.dismiss
     end
-    assert image_show_page.url?(mind_blown_url)
+    assert_equal mind_blown_url, image_show_page.image_url
 
     images_index_page = image_show_page.delete_and_confirm!
     assert_equal 'Image successfully deleted!', images_index_page.flash_message(:success)
