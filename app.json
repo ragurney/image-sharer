@@ -18,6 +18,12 @@
     },
     "SECRET_KEY_BASE": {
       "generator": "secret"
+    },
+    "SENDGRID_USERNAME": {
+      "required": true
+    },
+    "SENDGRID_PASSWORD": {
+      "required": true
     }
   },
   "addons": [
