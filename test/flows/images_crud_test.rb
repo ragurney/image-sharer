@@ -7,12 +7,12 @@ class ImagesCrudTest < FlowTestCase
     new_image_page = images_index_page.add_new_image!
 
     tags = %w(foo bar)
-    new_image_page = new_image_page.create_image!(url: 'invalid', tags: tags.join(', '))
+    new_image_page = new_image_page.add_image!(url: 'invalid', tags: tags.join(', '))
       .as_a(PageObjects::Images::NewPage)
     assert_equal 'must be a valid url', new_image_page.url.error_message
     assert_equal tags.join(', '), new_image_page.tag_list.value
 
-    new_image_page = new_image_page.create_image!(url: 'thisis.com/invalid?', tags: tags.join(', '))
+    new_image_page = new_image_page.add_image!(url: 'thisis.com/invalid?', tags: tags.join(', '))
       .as_a(PageObjects::Images::NewPage)
     assert_equal 'Please review the problems below:', new_image_page.flash_message(:danger)
     assert_equal 'must be a valid url', new_image_page.url.error_message
@@ -21,7 +21,7 @@ class ImagesCrudTest < FlowTestCase
     image_url = 'https://media.giphy.com/media/rl0FOxdz7CcxO/giphy.gif'
     new_image_page.url.set(image_url)
 
-    image_show_page = new_image_page.create_image!
+    image_show_page = new_image_page.add_image!
     assert_equal 'Url successfully saved!', image_show_page.flash_message(:success)
 
     assert_equal image_url, image_show_page.image_url

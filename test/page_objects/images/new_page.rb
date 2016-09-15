@@ -9,10 +9,10 @@ module PageObjects
         element :tag_list
       end
 
-      def create_image!(url: nil, tags: nil)
+      def add_image!(url: nil, tags: nil)
         self.url.set(url) if url.present?
         tag_list.set(tags) if tags.present?
-        node.click_button('Upload Image')
+        node.click_button('Add Image')
         window.change_to(ShowPage, self.class) # Order aware
       end
     end
