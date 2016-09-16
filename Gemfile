@@ -29,6 +29,7 @@ gem 'acts-as-taggable-on', '~> 4.0'
 gem 'bootstrap', '~> 4.0.0.alpha3'
 
 gem 'validate_url'
+gem 'email_validator'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
