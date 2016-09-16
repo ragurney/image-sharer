@@ -27,8 +27,8 @@
     }
   },
   "addons": [
-    "heroku-postgresql",
-    "sendgrid"
+    "heroku-postgresql:hobby-dev",
+    "sendgrid:starter"
   ],
   "buildpacks": [
     {
