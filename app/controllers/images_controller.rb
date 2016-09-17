@@ -23,19 +23,20 @@ class ImagesController < ApplicationController
   end
 
   def share_new
+    @share_form = ShareForm.new
   end
 
   def share_send
-    email_info = email_params
+    @share_form = ShareForm.new(email_params)
 
-    ImageMailer.send_share_email(email_address: email_info[:email_address], message: email_info[:message],
-                                 url: @image.url).deliver_now
-  rescue ArgumentError
-    flash[:error] = 'Email cannot be null!'
-    render :share_new, status: :unprocessable_entity
-  else
-    flash[:success] = 'Image successfully sent!'
-    redirect_to root_path
+    if @share_form.valid?
+      ImageMailer.send_share_email(email_address: @share_form.email_address, message: @share_form.message,
+                                   url: @image.url).deliver_now
+      flash[:success] = 'Email successfully sent!'
+      redirect_to root_path
+    else
+      render :share_new, status: :unprocessable_entity
+    end
   end
 
   def destroy
@@ -51,7 +52,7 @@ class ImagesController < ApplicationController
   end
 
   def email_params
-    params.require(:email_info).permit(:email_address, :message)
+    params.require(:share_form).permit(:email_address, :message)
   end
 
   def set_image

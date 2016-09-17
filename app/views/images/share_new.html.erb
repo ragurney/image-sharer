@@ -2,7 +2,7 @@
 
 <div class="row">
   <div class="col-xs-6">
-    <%= simple_form_for :email_info, url: share_send_image_path(@image)  do |f| %>
+    <%= simple_form_for @share_form, url: share_send_image_path(@image)  do |f| %>
         <%= f.error_notification  %>
 
         <%= f.input :email_address, label: "Recipient's email", input_html: { placeholder: 'Enter email'} %>
