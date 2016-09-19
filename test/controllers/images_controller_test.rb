@@ -180,6 +180,15 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test 'check images have share button and correct link' do
+    image = Image.create!(url: 'http://validurl.com', tag_list: 'some, awesome, tags')
+
+    get image_path(image)
+
+    assert_response :ok
+    assert_select '.js-share-image[href=?]', "/images/#{image.id}/share_new"
+  end
+
   test 'delete removes image successfully' do
     image = Image.create!(url: 'https://www.google.com/image2.png')
 
