@@ -8,5 +8,8 @@ Rails.application.routes.draw do
   end
 
   resources :users, only: [:new, :create]
+
+  get    '/login',   to: 'sessions#new', as: :new_session
+
   root 'images#index'
 end
