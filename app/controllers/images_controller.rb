@@ -59,7 +59,7 @@ class ImagesController < ApplicationController
     if (@image = Image.find_by(id: params[:id]))
       @image
     else
-      flash[:error] = 'The image you were looking for does not exist'
+      flash[:danger] = 'The image you were looking for does not exist'
       redirect_to images_path
     end
   end

@@ -24,7 +24,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     get image_path(id: -1)
 
     assert_redirected_to images_path
-    assert_equal 'The image you were looking for does not exist', flash[:error]
+    assert_equal 'The image you were looking for does not exist', flash[:danger]
   end
 
   test 'controller should create and put correctly (just image)' do
@@ -150,7 +150,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
       post share_send_image_path(image, share_form: { email_address: 'valid@valid.com', message: 'Hi!' })
     end
     assert_redirected_to images_path
-    assert_equal 'The image you were looking for does not exist', flash[:error]
+    assert_equal 'The image you were looking for does not exist', flash[:danger]
   end
 
   test 'images are ordered by descending creating time' do
