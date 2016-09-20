@@ -6,7 +6,11 @@
       <%= nav_item 'New Image', new_image_path, class: 'nav-link' %>
     </ul>
     <ul class="nav navbar-nav navbar-right pull-xs-right">
-      <%= nav_item 'Log in', login_path, class: 'nav-link' %>
+      <% if logged_in? %>
+        <%= nav_item 'Log out', '#', class: 'nav-link' %>
+      <% else %>
+        <%= nav_item 'Log in', new_session_path, class: 'nav-link' %>
+      <% end %>
     </ul>
   </div>
 </nav>

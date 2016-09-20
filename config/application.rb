@@ -28,6 +28,9 @@ module Base
     config.browserify_rails.commandline_options = '-t babelify'
 
     # Custom directories
-    config.autoload_paths += Dir["#{config.root}/business_logic/**/"]
+    config.autoload_paths += %W(
+      #{Rails.root}/business_logic
+      #{Rails.root}/lib
+    )
   end
 end
