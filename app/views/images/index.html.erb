@@ -1,8 +1,11 @@
-<h1> Images Homepage </h1>  
+<h1 class="text-xs-center">Images Homepage</h1>  
 
-<div id="images_list" class="card-group">
+
+<div id="images_list" class="row flex-items-xs-center hover-container">
   <% @image_list.each do |img| %> 
-    <%= render 'image_card', image: img %>
+    <div class="js-image-card-container col-lg-4 col-md-6 col-sm-12" data-image-id="<%= img.id %>">
+      <%= render 'image_card', image: img %>
+    </div>
    <% end %> 
 </div>
-  <%= link_to 'Add New Image', new_image_path %>
+

@@ -49,7 +49,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     image = Image.create!(url: @url, tag_list: tags.join(', '))
     get image_path(image)
 
-    assert_select 'span.image-tag', 3 do |spans|
+    assert_select 'span.image-card__tag', 3 do |spans|
       spans.each_with_index do |span, i|
         assert_equal tags[i], span.text
       end
@@ -160,7 +160,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :ok
     assert_select 'img', 4
-    assert_select 'img', class: /image-tile/ do |images|
+    assert_select 'img', class: /image-card__figure/ do |images|
       images.each_with_index do |_img, i|
         assert_select '[src=?]', urls[i]
       end

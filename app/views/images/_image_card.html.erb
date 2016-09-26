@@ -1,11 +1,11 @@
-<div class="js-image-card-container text-xs-center card" data-image-id="<%= image.id %>">
-  <%= link_to image_tag(image.url, class: 'card-img image-tile img-circle'),
+<div class="text-xs-center card image-card hover-container__element">
+  <%= link_to image_tag(image.url, class: 'card-img-top image-card__figure'),
               image_path(id: image.id),
               class: 'js-image-link'%>
   <div class="card-block js-image-tags">
     <% image.tags.each do |tag| %>
         <%= link_to images_path(tag: tag.name) do%>
-          <span class="tag tag-default image-tag"><%= tag.name %></span>
+          <span class="tag tag-default image-card__tag"><%= tag.name %></span>
         <% end %>
     <% end %>
     <div class="card-block">

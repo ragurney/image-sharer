@@ -1,0 +1,3 @@
+.hover-container:hover .hover-container__element:not(:hover) {
+  opacity: 0.4;
+}
