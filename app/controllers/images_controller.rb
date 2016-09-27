@@ -1,4 +1,6 @@
 class ImagesController < ApplicationController
+  before_action :set_image, only: [:show, :share_new, :share_send, :destroy]
+
   def index
     @image_list = ImageSelector.select params[:tag]
   end
@@ -18,14 +20,27 @@ class ImagesController < ApplicationController
   end
 
   def show
-    @image = Image.find(params['id'])
-  rescue ActiveRecord::RecordNotFound
-    render plain: 'The image you were looking for was not found!', status: :not_found
+  end
+
+  def share_new
+    @share_form = ShareForm.new
+  end
+
+  def share_send
+    @share_form = ShareForm.new(email_params)
+
+    if @share_form.valid?
+      ImageMailer.send_share_email(email_address: @share_form.email_address, message: @share_form.message,
+                                   url: @image.url).deliver_now
+      flash[:success] = 'Email successfully sent!'
+      redirect_to root_path
+    else
+      render :share_new, status: :unprocessable_entity
+    end
   end
 
   def destroy
-    image = Image.find(params['id'])
-    image.destroy
+    @image.destroy
     flash[:success] = 'Image successfully deleted!'
     redirect_to images_path
   end
@@ -34,5 +49,18 @@ class ImagesController < ApplicationController
 
   def image_params
     params.require(:image).permit(:url, :tag_list)
+  end
+
+  def email_params
+    params.require(:share_form).permit(:email_address, :message)
+  end
+
+  def set_image
+    if (@image = Image.find_by(id: params[:id]))
+      @image
+    else
+      flash[:danger] = 'The image you were looking for does not exist'
+      redirect_to images_path
+    end
   end
 end

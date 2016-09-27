@@ -23,6 +23,11 @@ module PageObjects
         delete(&:accept)
         window.change_to(IndexPage)
       end
+
+      def open_share_page!
+        node.click_on('Share')
+        window.change_to(ShareNewPage)
+      end
     end
   end
 end

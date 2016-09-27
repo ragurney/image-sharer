@@ -1,0 +1,12 @@
+Hello from Image Sharer!
+=========================
+
+You have been sent an image, click <%= @url %> to check it out.
+
+<% if @message.present? %>
+  Your friend said:
+  <%= @message %>
+<% end %>
+Thanks for viewing and have a great day!
+
+Want to see more images? Check out our website: <%= root_url %>
