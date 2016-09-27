@@ -1,0 +1,41 @@
+.footer {
+  background-color: $footer-background-color;
+  text-align: center;
+  padding: 45px;
+}
+
+.footer__company-motto {
+  color:  $footer-company-motto-color;
+  font-size: 24px;
+  margin: 0;
+}
+
+.footer__company-name {
+  color:  $footer-company-name-color;
+  font-size: 14px;
+  margin: 0;
+}
+
+.footer__links {
+  font-weight: bold;
+  color: $footer-links-color;
+  padding: 35px 0 10px;
+  margin: 0;
+
+  a {
+      display: inline-block;
+      text-decoration: none;
+      color: inherit;
+
+    &:before {
+      content: "|";
+      margin: 0 15px;
+    }
+  }
+
+  a:first-of-type {
+    &:before {
+      display: none;
+    }
+  }
+}

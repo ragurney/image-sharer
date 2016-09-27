@@ -14,7 +14,7 @@ module PageObjects
       end
 
       def add_new_image!
-        node.click_on('New Image')
+        node.find('.nav-link', text: 'New Image').click
         window.change_to(NewPage)
       end
 

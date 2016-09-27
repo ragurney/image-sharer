@@ -1,5 +1,8 @@
-$enable-flex: true;
+@import "variables";
 
 @import "bootstrap";
-@import "base";
-@import "image-tile";
+
+@import "footer";
+@import "hover-container";
+@import "image-card";
+@import "layout";

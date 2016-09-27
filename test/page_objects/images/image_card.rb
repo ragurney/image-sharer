@@ -6,7 +6,7 @@ module PageObjects
       end
 
       def tags
-        node.all('.image-tag').map(&:text)
+        node.all('.image-card__tag').map(&:text)
       end
 
       def click_tag!(tag_name)
