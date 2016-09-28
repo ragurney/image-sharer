@@ -25,4 +25,34 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_select '.user_email .text-help', 'is an invalid email address'
   end
+
+  test 'should not allow access to sign up page once logged in' do
+    login_valid_user
+
+    get new_user_path
+    assert_redirected_to root_path
+    assert_equal 'Oops! You are already logged in!', flash[:danger]
+  end
+
+  test 'should not allow user to sign up once logged in' do
+    login_valid_user
+
+    post users_path(user: { email: 'valid@email.com', password: '123password' })
+    assert_redirected_to root_path
+    assert_equal 'Oops! You are already logged in!', flash[:danger]
+  end
+
+  private
+
+  def login_valid_user
+    user = User.create!(email: 'valid@email.com', password: 'password123')
+
+    post sessions_path,
+         params: {
+           session: {
+             email: user.email,
+             password: user.password
+           }
+         }
+  end
 end

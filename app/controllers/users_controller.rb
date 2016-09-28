@@ -1,4 +1,8 @@
 class UsersController < ApplicationController
+  include Loginable
+
+  before_action :redirect_on_authenticated, only: [:new, :create]
+
   def new
     @user = User.new
   end

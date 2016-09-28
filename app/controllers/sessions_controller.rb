@@ -1,6 +1,8 @@
 class SessionsController < ApplicationController
   include Loginable
 
+  before_action :redirect_on_authenticated, only: [:new, :create]
+
   def new
     @session = Session.new
   end

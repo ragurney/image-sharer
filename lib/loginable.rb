@@ -10,4 +10,8 @@ module Loginable
   def logged_in?
     current_user.present?
   end
+
+  def redirect_on_authenticated
+    redirect_to root_path, flash: { danger: 'Oops! You are already logged in!' } if logged_in?
+  end
 end

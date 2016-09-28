@@ -72,6 +72,30 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'Successfully signed in!', flash[:success]
   end
 
+  test 'should not allow access to log in page once logged in' do
+    user = User.create!(email: 'valid@email.com', password: 'password123')
+    login_as(user)
+
+    get new_session_path
+    assert_redirected_to root_path
+    assert_equal 'Oops! You are already logged in!', flash[:danger]
+  end
+
+  test 'should not allow users to log in once logged in' do
+    user = User.create!(email: 'valid@email.com', password: 'password123')
+    login_as(user)
+
+    post sessions_path,
+         params: {
+           session: {
+             email: 'valid@email.com',
+             password: 'password123'
+           }
+         }
+    assert_redirected_to root_path
+    assert_equal 'Oops! You are already logged in!', flash[:danger]
+  end
+
   private
 
   def login_as(user)
