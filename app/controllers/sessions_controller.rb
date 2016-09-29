@@ -16,6 +16,12 @@ class SessionsController < ApplicationController
     end
   end
 
+  def destroy
+    log_out if logged_in?
+    flash[:success] = 'Successfully logged out'
+    redirect_to root_path
+  end
+
   private
 
   def session_params
@@ -31,5 +37,10 @@ class SessionsController < ApplicationController
       flash[:danger] = 'There was a problem with your username and/or password'
       render :new, status: :bad_request
     end
+  end
+
+  def log_out
+    session.delete(:user_id)
+    @current_user = nil
   end
 end

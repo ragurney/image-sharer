@@ -72,6 +72,19 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'Successfully signed in!', flash[:success]
   end
 
+  test 'log out successfully, redirect to index page and show proper success message' do
+    user = User.create!(email: 'valid@email.com', password: 'password123')
+    login_as(user)
+
+    assert_equal user.id, session[:user_id]
+
+    delete session_path
+
+    assert_redirected_to root_path
+    assert_nil session[:user_id]
+    assert_equal 'Successfully logged out', flash[:success]
+  end
+
   test 'should not allow access to log in page once logged in' do
     user = User.create!(email: 'valid@email.com', password: 'password123')
     login_as(user)
