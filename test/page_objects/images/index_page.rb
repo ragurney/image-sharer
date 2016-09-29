@@ -29,6 +29,16 @@ module PageObjects
         node.click_on('All Images')
         window.change_to(IndexPage)
       end
+
+      def log_in!
+        node.click_on('Log in')
+        window.change_to(Sessions::NewPage)
+      end
+
+      def log_out!
+        node.click_on('Log out')
+        window.change_to(self.class)
+      end
     end
   end
 end
