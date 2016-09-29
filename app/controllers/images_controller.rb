@@ -24,6 +24,7 @@ class ImagesController < ApplicationController
 
   def share_new
     @share_form = ShareForm.new
+    render '_share_form'
   end
 
   def share_send
@@ -35,7 +36,7 @@ class ImagesController < ApplicationController
       flash[:success] = 'Email successfully sent!'
       redirect_to root_path
     else
-      render :share_new, status: :unprocessable_entity
+      render '_share_form', status: :unprocessable_entity
     end
   end
 
