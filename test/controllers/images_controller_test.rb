@@ -39,7 +39,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     get image_path(image)
 
     assert_response :ok
-    assert_select '.js-share-image[href=?]', "/images/#{image.id}/share_new"
+    assert_select '.js-share-image[href=?]', share_new_image_path(image)
   end
 
   test 'show page should redirect with error for nonexistent image' do
@@ -132,14 +132,14 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'image cards have delete button and correct link' do
-    image_ids = create_images.map(&:id)
+    images = create_images.map(&:id)
 
     get images_path
 
     assert_response :ok
     assert_select '.js-delete-image', 4 do |links|
       links.each_with_index do |link, index|
-        assert_equal "/images/#{image_ids[index]}", link[:href]
+        assert_equal image_path(images[index]), link[:href]
       end
     end
   end
