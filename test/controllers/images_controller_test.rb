@@ -5,29 +5,30 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     @url = 'https://www.google.com/image1.jpg'
   end
 
-  test 'should get images from page' do
+  test 'new image page' do
     get new_image_path
 
     assert_response :ok
     assert_select 'h1', 1, 'New Image URL'
+    assert_select 'form#new_image[action=?]', images_path
   end
 
-  test 'should show correct image' do
+  test 'show page should display correct image' do
     image = Image.create!(url: @url)
     get image_path(image)
 
     assert_response :ok
-    assert_select 'img', 1
+    assert_select 'img[src=?]', image.url, 1
   end
 
-  test 'should show error for incorrect image' do
+  test 'show page should redirect with error for nonexistent image' do
     get image_path(id: -1)
 
     assert_redirected_to images_path
     assert_equal 'The image you were looking for does not exist', flash[:danger]
   end
 
-  test 'controller should create and put correctly (just image)' do
+  test 'create image successfully' do
     assert_difference 'Image.count' do
       post images_path,
            params: {
@@ -41,7 +42,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'Url successfully saved!', flash[:success]
   end
 
-  test 'controller should create and put correctly (image and tags)' do
+  test 'create image with tags successfully' do
     assert_difference 'Image.count' do
       post images_path,
            params: {
@@ -55,7 +56,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to image_path(Image.last)
   end
 
-  test 'should show image with tags upon create' do
+  test 'show page should display image tags' do
     tags = %w(tag1 tag2 tag3)
     image = Image.create!(url: @url, tag_list: tags.join(', '))
     get image_path(image)
@@ -67,18 +68,19 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'invalid url does not create image' do
+  test 'create fails with invalid url' do
     assert_no_difference 'Image.count' do
       post images_path,
            params: {
              image: {
-               url: nil,
-               tag_list: nil
+               url: 'invalid'
              }
            }
     end
 
     assert_response :unprocessable_entity
+    assert_select 'form#new_image[action=?]', images_path
+    assert_select '.text-help', 'must be a valid url'
   end
 
   test 'image index with no selected tag' do
@@ -98,7 +100,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     assert_select '.card', 2
   end
 
-  test 'no images in db' do
+  test 'image index with no images in db' do
     get images_path
 
     assert_response :ok
@@ -117,13 +119,13 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     assert_select 'h1', 1, 'Share Your Image'
   end
 
-  test 'share new missing image displays correct flash message and redirects' do
+  test 'share new for nonexistent image displays correct flash message and redirects' do
     get share_new_image_path(-1)
     assert_redirected_to images_path
     assert_equal 'The image you were looking for does not exist', flash[:danger]
   end
 
-  test 'share_send action email' do
+  test 'share image successfully' do
     image = Image.create!(url: 'https://example.com')
     assert_difference 'ActionMailer::Base.deliveries.size', +1 do
       post share_send_image_path(image),
@@ -147,7 +149,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'share_send action no email error' do
+  test 'sharing image with no email address fails' do
     image = Image.create!(url: 'https://example.com')
     assert_difference 'ActionMailer::Base.deliveries.size', 0 do
       post share_send_image_path(image),
@@ -158,6 +160,8 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
            }
     end
     assert_response :unprocessable_entity
+    assert_select 'form[action=?]', share_send_image_path(image)
+    assert_select '.text-help', "can't be blank"
   end
 
   test 'share_send action invalid email error' do
@@ -172,6 +176,8 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
            }
     end
     assert_response :unprocessable_entity
+    assert_select 'form[action=?]', share_send_image_path(image)
+    assert_select '.text-help', 'is invalid'
   end
 
   test 'share_send action image does not exist' do
@@ -188,7 +194,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'The image you were looking for does not exist', flash[:danger]
   end
 
-  test 'images are ordered by descending creating time' do
+  test 'images on index page are ordered by descending creating time' do
     urls = create_images.map(&:url)
 
     get images_path
@@ -202,7 +208,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'check images have delete button and correct link' do
+  test 'image cards have delete button and correct link' do
     image_ids = create_images.map(&:id)
 
     get images_path
@@ -215,7 +221,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'check images have share button and correct link' do
+  test 'image show page has share button' do
     image = Image.create!(url: 'http://validurl.com', tag_list: 'some, awesome, tags')
 
     get image_path(image)
