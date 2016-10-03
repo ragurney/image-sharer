@@ -18,7 +18,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     get image_path(image)
 
     assert_response :ok
-    assert_select 'img[src=?]', image.url, 1
+    assert_select '.js-image-card-container img[src=?]', image.url, 1
   end
 
   test 'show page should display image tags' do
@@ -96,7 +96,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     get images_path
 
     assert_response :ok
-    assert_select 'img', Image.all.length
+    assert_select '.js-image-card-container img', Image.all.length
   end
 
   test 'image index with tag selected' do
@@ -106,14 +106,14 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :ok
 
     assert_select 'span[text()="tag3"]', 2
-    assert_select '.card', 2
+    assert_select '.js-image-card-container img', 2
   end
 
   test 'image index with no images in db' do
     get images_path
 
     assert_response :ok
-    assert_select 'img', 0
+    assert_select '.js-image-card-container img', 0
     assert_select 'h1', 1, 'Images Homepage'
   end
 
@@ -123,8 +123,8 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     get images_path
 
     assert_response :ok
-    assert_select 'img', 4
-    assert_select 'img', class: /image-card__figure/ do |images|
+    assert_select '.js-image-card-container img', 4
+    assert_select '.js-image-card-container img', class: /image-card__figure/ do |images|
       images.each_with_index do |_img, i|
         assert_select '[src=?]', urls[i]
       end
