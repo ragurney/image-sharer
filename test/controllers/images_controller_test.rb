@@ -14,7 +14,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'show page should display correct image' do
-    image = Image.create!(url: @url)
+    image = Image.create!(url: @url, tag_list: 'tag')
     get image_path(image)
 
     assert_response :ok
@@ -45,7 +45,8 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
       post images_path,
            params: {
              image: {
-               url: @url
+               url: @url,
+               tag_list: 'tag'
              }
            }
     end
@@ -73,7 +74,8 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
       post images_path,
            params: {
              image: {
-               url: 'invalid'
+               url: 'invalid',
+               tag_list: 'tag'
              }
            }
     end
@@ -81,6 +83,22 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_select 'form#new_image[action=?]', images_path
     assert_select '.text-help', 'must be a valid url'
+  end
+
+  test 'create fails with no tags provided' do
+    assert_no_difference 'Image.count' do
+      post images_path,
+           params: {
+             image: {
+               url: @url,
+               tag_list: ''
+             }
+           }
+    end
+
+    assert_response :unprocessable_entity
+    assert_select 'form#new_image[action=?]', images_path
+    assert_select '.text-help', 'must have at least one tag'
   end
 
   test 'image index with no selected tag' do
@@ -136,7 +154,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'share image successfully' do
-    image = Image.create!(url: 'https://example.com')
+    image = Image.create!(url: 'https://example.com', tag_list: 'tag')
     assert_difference 'ActionMailer::Base.deliveries.size', +1 do
       post share_image_path(image),
            xhr: true,
@@ -160,7 +178,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'sharing image with no email address fails' do
-    image = Image.create!(url: 'https://example.com')
+    image = Image.create!(url: 'https://example.com', tag_list: 'tag')
     assert_difference 'ActionMailer::Base.deliveries.size', 0 do
       post share_image_path(image),
            xhr: true,
@@ -179,7 +197,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'share_send action invalid email error' do
-    image = Image.create!(url: 'https://example.com')
+    image = Image.create!(url: 'https://example.com', tag_list: 'tag')
     assert_difference 'ActionMailer::Base.deliveries.size', 0 do
       post share_image_path(image),
            xhr: true,
@@ -214,7 +232,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'delete removes image successfully' do
-    image = Image.create!(url: 'https://www.google.com/image2.png')
+    image = Image.create!(url: 'https://www.google.com/image2.png', tag_list: 'tag')
 
     assert_difference 'Image.count', -1 do
       delete image_path(image)
@@ -232,7 +250,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
   private
 
   def create_images
-    Image.create!([{ url: @url, tag_list: nil },
+    Image.create!([{ url: @url, tag_list: 'tag4' },
                    { url: 'http://www.validurl.com/image1.png', tag_list: 'tag1, tag3',
                      created_at: Time.zone.now - 1.day },
                    { url: 'http://www.validurl.com/image1.png', tag_list: 'tag1, tag2',

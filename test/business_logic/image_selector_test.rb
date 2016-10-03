@@ -2,7 +2,7 @@ require 'test_helper'
 
 class ImageSelectorTest < ActiveSupport::TestCase
   test 'should show all images when pass nil for tags' do
-    image3 = Image.create!(url: 'http://www.validurl.com/image2.png', tag_list: nil,
+    image3 = Image.create!(url: 'http://www.validurl.com/image2.png', tag_list: 'tag4',
                            created_at: Time.zone.now)
     image1 = Image.create!(url: 'http://www.validurl.com/image.png', tag_list: 'tag1, tag2, tag3',
                            created_at: Time.zone.now - 3.days)
@@ -16,7 +16,7 @@ class ImageSelectorTest < ActiveSupport::TestCase
   end
 
   test 'should show specified image when tag is selected' do
-    Image.create!(url: 'http://www.validurl.com/image2.png', tag_list: nil,
+    Image.create!(url: 'http://www.validurl.com/image2.png', tag_list: 'tag4',
                   created_at: Time.zone.now)
     image1 = Image.create!(url: 'http://www.validurl.com/image.png', tag_list: 'tag1, tag2, tag3',
                            created_at: Time.zone.now - 3.days)
@@ -32,7 +32,7 @@ class ImageSelectorTest < ActiveSupport::TestCase
   end
 
   test 'should show no images when invalid tag is passed' do
-    Image.create!(url: 'http://www.validurl.com/image2.png', tag_list: nil,
+    Image.create!(url: 'http://www.validurl.com/image2.png', tag_list: 'tag4',
                   created_at: Time.zone.now)
     Image.create!(url: 'http://www.validurl.com/image.png', tag_list: 'tag1, tag2, tag3',
                   created_at: Time.zone.now - 3.days)
