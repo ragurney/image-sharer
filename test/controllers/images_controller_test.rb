@@ -37,7 +37,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
            }
     end
 
-    assert_response :found
+    assert_redirected_to image_path(Image.last)
     assert_equal 'Url successfully saved!', flash[:success]
   end
 
@@ -52,7 +52,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
            }
     end
 
-    assert_response :found
+    assert_redirected_to image_path(Image.last)
   end
 
   test 'should show image with tags upon create' do
@@ -134,7 +134,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
              }
            }
     end
-    assert_response :found
+    assert_redirected_to root_path
     assert_equal 'Email successfully sent!', flash[:success]
 
     share_email = ActionMailer::Base.deliveries.last
