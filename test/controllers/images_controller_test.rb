@@ -21,6 +21,27 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     assert_select 'img[src=?]', image.url, 1
   end
 
+  test 'show page should display image tags' do
+    tags = %w(tag1 tag2 tag3)
+    image = Image.create!(url: @url, tag_list: tags.join(', '))
+    get image_path(image)
+
+    assert_select 'span.image-card__tag', 3 do |spans|
+      spans.each_with_index do |span, i|
+        assert_equal tags[i], span.text
+      end
+    end
+  end
+
+  test 'image show page has share button' do
+    image = Image.create!(url: 'http://validurl.com', tag_list: 'some, awesome, tags')
+
+    get image_path(image)
+
+    assert_response :ok
+    assert_select '.js-share-image[href=?]', "/images/#{image.id}/share_new"
+  end
+
   test 'show page should redirect with error for nonexistent image' do
     get image_path(id: -1)
 
@@ -54,18 +75,6 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to image_path(Image.last)
-  end
-
-  test 'show page should display image tags' do
-    tags = %w(tag1 tag2 tag3)
-    image = Image.create!(url: @url, tag_list: tags.join(', '))
-    get image_path(image)
-
-    assert_select 'span.image-card__tag', 3 do |spans|
-      spans.each_with_index do |span, i|
-        assert_equal tags[i], span.text
-      end
-    end
   end
 
   test 'create fails with invalid url' do
@@ -106,6 +115,33 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :ok
     assert_select 'img', 0
     assert_select 'h1', 1, 'Images Homepage'
+  end
+
+  test 'images on index page are ordered by descending creating time' do
+    urls = create_images.map(&:url)
+
+    get images_path
+
+    assert_response :ok
+    assert_select 'img', 4
+    assert_select 'img', class: /image-card__figure/ do |images|
+      images.each_with_index do |_img, i|
+        assert_select '[src=?]', urls[i]
+      end
+    end
+  end
+
+  test 'image cards have delete button and correct link' do
+    image_ids = create_images.map(&:id)
+
+    get images_path
+
+    assert_response :ok
+    assert_select '.js-delete-image', 4 do |links|
+      links.each_with_index do |link, index|
+        assert_equal "/images/#{image_ids[index]}", link[:href]
+      end
+    end
   end
 
   test 'share new displays correct form' do
@@ -192,42 +228,6 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     end
     assert_redirected_to images_path
     assert_equal 'The image you were looking for does not exist', flash[:danger]
-  end
-
-  test 'images on index page are ordered by descending creating time' do
-    urls = create_images.map(&:url)
-
-    get images_path
-
-    assert_response :ok
-    assert_select 'img', 4
-    assert_select 'img', class: /image-card__figure/ do |images|
-      images.each_with_index do |_img, i|
-        assert_select '[src=?]', urls[i]
-      end
-    end
-  end
-
-  test 'image cards have delete button and correct link' do
-    image_ids = create_images.map(&:id)
-
-    get images_path
-
-    assert_response :ok
-    assert_select '.js-delete-image', 4 do |links|
-      links.each_with_index do |link, index|
-        assert_equal "/images/#{image_ids[index]}", link[:href]
-      end
-    end
-  end
-
-  test 'image show page has share button' do
-    image = Image.create!(url: 'http://validurl.com', tag_list: 'some, awesome, tags')
-
-    get image_path(image)
-
-    assert_response :ok
-    assert_select '.js-share-image[href=?]', "/images/#{image.id}/share_new"
   end
 
   test 'delete removes image successfully' do
