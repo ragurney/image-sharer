@@ -118,10 +118,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'share new missing image displays correct flash message and redirects' do
-    image = Image.create!(url: 'https://static.pexels.com/photos/7919/pexels-photo.jpg')
-    image.destroy
-
-    get share_new_image_path(image)
+    get share_new_image_path(-1)
     assert_redirected_to images_path
     assert_equal 'The image you were looking for does not exist', flash[:danger]
   end
@@ -178,10 +175,8 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'share_send action image does not exist' do
-    image = Image.create!(url: 'https://example.com')
-    image.destroy
     assert_difference 'ActionMailer::Base.deliveries.size', 0 do
-      post share_send_image_path(image),
+      post share_send_image_path(-1),
            params: {
              share_form: {
                email_address: 'valid@valid.com',
@@ -240,10 +235,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'delete nonexistent image redirects correctly' do
-    image = Image.create!(url: 'https://static.pexels.com/photos/7919/pexels-photo.jpg')
-    image.destroy
-
-    delete image_path(image)
+    delete image_path(-1)
     assert_redirected_to images_path
     assert_equal 'The image you were looking for does not exist', flash[:danger]
   end
