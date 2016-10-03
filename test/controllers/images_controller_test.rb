@@ -29,7 +29,12 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
 
   test 'controller should create and put correctly (just image)' do
     assert_difference 'Image.count' do
-      post images_path(image: { url: @url, tag_list: nil })
+      post images_path,
+           params: {
+             image: {
+               url: @url
+             }
+           }
     end
 
     assert_response :found
@@ -38,7 +43,13 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
 
   test 'controller should create and put correctly (image and tags)' do
     assert_difference 'Image.count' do
-      post images_path(image: { url: @url, tag_list: 'tag1, tag2, tag3' })
+      post images_path,
+           params: {
+             image: {
+               url: @url,
+               tag_list: 'tag1, tag2, tag3'
+             }
+           }
     end
 
     assert_response :found
@@ -58,7 +69,13 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
 
   test 'invalid url does not create image' do
     assert_no_difference 'Image.count' do
-      post images_path(image: { url: nil, tag_list: nil })
+      post images_path,
+           params: {
+             image: {
+               url: nil,
+               tag_list: nil
+             }
+           }
     end
 
     assert_response :unprocessable_entity
@@ -112,7 +129,13 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
   test 'share_send action email' do
     image = Image.create!(url: 'https://example.com')
     assert_difference 'ActionMailer::Base.deliveries.size', +1 do
-      post share_send_image_path(image, share_form: { email_address: 'example@example.com', message: 'Hi!' })
+      post share_send_image_path(image),
+           params: {
+             share_form: {
+               email_address: 'example@example.com',
+               message: 'Hi!'
+             }
+           }
     end
     assert_response :found
     assert_equal 'Email successfully sent!', flash[:success]
@@ -130,7 +153,12 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
   test 'share_send action no email error' do
     image = Image.create!(url: 'https://example.com')
     assert_difference 'ActionMailer::Base.deliveries.size', 0 do
-      post share_send_image_path(image, share_form: { email_address: nil, message: 'Hi!' })
+      post share_send_image_path(image),
+           params: {
+             share_form: {
+               message: 'Hi!'
+             }
+           }
     end
     assert_response :unprocessable_entity
   end
@@ -138,7 +166,13 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
   test 'share_send action invalid email error' do
     image = Image.create!(url: 'https://example.com')
     assert_difference 'ActionMailer::Base.deliveries.size', 0 do
-      post share_send_image_path(image, share_form: { email_address: 'invalid', message: 'Hi!' })
+      post share_send_image_path(image),
+           params: {
+             share_form: {
+               email_address: 'invalid',
+               message: 'Hi!'
+             }
+           }
     end
     assert_response :unprocessable_entity
   end
@@ -147,7 +181,13 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     image = Image.create!(url: 'https://example.com')
     image.destroy
     assert_difference 'ActionMailer::Base.deliveries.size', 0 do
-      post share_send_image_path(image, share_form: { email_address: 'valid@valid.com', message: 'Hi!' })
+      post share_send_image_path(image),
+           params: {
+             share_form: {
+               email_address: 'valid@valid.com',
+               message: 'Hi!'
+             }
+           }
     end
     assert_redirected_to images_path
     assert_equal 'The image you were looking for does not exist', flash[:danger]
