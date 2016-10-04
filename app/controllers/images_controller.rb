@@ -56,11 +56,15 @@ class ImagesController < ApplicationController
   end
 
   def find_image_or_redirect
+    find_image_or { redirect_to images_path }
+  end
+
+  def find_image_or
     if (@image = Image.find_by(id: params[:id]))
       @image
     else
       flash[:danger] = 'The image you were looking for does not exist'
-      redirect_to images_path
+      yield
     end
   end
 end
