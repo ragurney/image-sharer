@@ -16,7 +16,7 @@ module PageObjects
       def share_image!(email_address: nil, message: nil)
         self.email_address.set(url) if email_address.present?
         self.message.set(tags) if message.present?
-        node.click_button('Send')
+        node.click_button('Share')
         window.change_to(IndexPage, self.class)
       end
     end
