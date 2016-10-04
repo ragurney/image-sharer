@@ -5,9 +5,14 @@
     <%= simple_form_for @share_form, url: share_send_image_path(@image)  do |f| %>
         <%= f.error_notification  %>
 
-        <%= f.input :email_address, label: "Recipient's email", input_html: { placeholder: 'Enter email'} %>
-        <%= f.input :message, label: 'Message (optional)', as: :text,
-                                                           input_html: { placeholder: 'Enter message'} %>
+        <%= f.input :email_address,
+                    label: "Recipient's email",
+                    input_html: { placeholder: 'Enter email' } %>
+        <%= f.input :message,
+                    label: 'Message (optional)',
+                    as: :text,
+                    input_html: { placeholder: 'Enter message' } %>
+
         <div class="card text-xs-center">
           <%= image_tag @image.url, class: 'image-tile card-img' %>
         </div>
