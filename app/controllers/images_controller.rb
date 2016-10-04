@@ -1,5 +1,5 @@
 class ImagesController < ApplicationController
-  before_action :set_image, only: [:show, :share_new, :share_send, :destroy]
+  before_action :find_image_or_redirect, only: [:show, :share_new, :share_send, :destroy]
 
   def index
     @image_list = ImageSelector.select params[:tag]
@@ -55,12 +55,16 @@ class ImagesController < ApplicationController
     params.require(:share_form).permit(:email_address, :message)
   end
 
-  def set_image
+  def find_image_or_redirect
+    find_image_or { redirect_to images_path }
+  end
+
+  def find_image_or
     if (@image = Image.find_by(id: params[:id]))
       @image
     else
       flash[:danger] = 'The image you were looking for does not exist'
-      redirect_to images_path
+      yield
     end
   end
 end
