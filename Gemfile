@@ -25,7 +25,9 @@ gem 'simple_form', '3.2.1'
 # gem 'capistrano-rails', group: :development
 gem 'acts-as-taggable-on', '~> 4.0'
 gem 'bootstrap', '~> 4.0.0.alpha3'
-
+source 'https://rails-assets.org' do
+  gem 'rails-assets-tether', '>= 1.1.0'
+end
 gem 'validate_url'
 gem 'email_validator'
 group :development, :test do
