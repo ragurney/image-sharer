@@ -31,12 +31,9 @@ class ImagesController < ApplicationController
     @share_form = ShareForm.new(email_params)
 
     if @share_form.valid?
-      ImageMailer.send_share_email(email_address: @share_form.email_address, message: @share_form.message,
-                                   url: @image.url).deliver_now
-      flash[:success] = 'Email successfully sent!'
-      redirect_to root_path
+      respond_to_valid_share_form
     else
-      render '_share_form', status: :unprocessable_entity
+      respond_to_invalid_share_form
     end
   end
 
@@ -67,5 +64,16 @@ class ImagesController < ApplicationController
       flash[:danger] = 'The image you were looking for does not exist'
       yield
     end
+  end
+
+  def respond_to_valid_share_form
+    ImageMailer.send_share_email(email_address: @share_form.email_address, message: @share_form.message,
+                                 url: @image.url).deliver_now
+    flash[:success] = 'Email successfully sent!'
+    redirect_to root_path
+  end
+
+  def respond_to_invalid_share_form
+    render '_share_form', status: :unprocessable_entity
   end
 end
