@@ -3,5 +3,5 @@ class Session
   validates :email, presence: true
   validates :password, presence: true
 
-  attr_accessor :email, :password
+  attr_accessor :email, :password, :remember_me
 end

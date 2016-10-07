@@ -32,6 +32,7 @@ class SessionsController < ApplicationController
     user = User.find_by(email: session_params[:email].downcase)
     if user && user.authenticate(@session.password)
       log_in(user)
+      remember(user) if @session.remember_me == '1'
       redirect_to(root_path, flash: { success: 'Successfully signed in!' })
     else
       flash[:danger] = 'There was a problem with your username and/or password'
@@ -40,7 +41,16 @@ class SessionsController < ApplicationController
   end
 
   def log_out
+    forget
     session.delete(:user_id)
     @current_user = nil
+  end
+
+  def remember(user)
+    cookies.permanent.signed[:user_id] = user.id
+  end
+
+  def forget
+    cookies.delete(:user_id)
   end
 end

@@ -72,6 +72,14 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'Successfully signed in!', flash[:success]
   end
 
+  test 'successful log in with remember me selected' do
+    user = User.create!(email: 'valid@email.com', password: 'password123')
+    login_as(user, remember_as: 1)
+
+    assert_equal 'Successfully signed in!', flash[:success]
+    assert_not_nil cookies['user_id']
+  end
+
   test 'log out successfully, redirect to index page and show proper success message' do
     user = User.create!(email: 'valid@email.com', password: 'password123')
     login_as(user)
@@ -83,6 +91,17 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to root_path
     assert_nil session[:user_id]
     assert_equal 'Successfully logged out', flash[:success]
+  end
+
+  test 'log out after remember me log in deletes user id in cookie' do
+    user = User.create!(email: 'valid@email.com', password: 'password123')
+    login_as(user, remember_as: 1)
+    assert_not_nil cookies['user_id']
+
+    delete session_path
+    assert_redirected_to root_path
+    assert_equal 'Successfully logged out', flash[:success]
+    assert_empty cookies['user_id']
   end
 
   test 'should not allow access to log in page once logged in' do
@@ -111,12 +130,13 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
   private
 
-  def login_as(user)
+  def login_as(user, remember_as: false)
     post sessions_path,
          params: {
            session: {
              email: user.email,
-             password: user.password
+             password: user.password,
+             remember_me: remember_as
            }
          }
 
