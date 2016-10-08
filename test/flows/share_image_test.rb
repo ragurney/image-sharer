@@ -18,12 +18,12 @@ class ShareImageTest < FlowTestCase
     share_new_image_page = image_to_share.open_share_page!
     assert_equal mind_blown_url, share_new_image_page.image_url
 
-    share_new_image_page = share_new_image_page.share_image!.as_a(PageObjects::Images::ShareNewPage)
+    share_new_image_page = share_new_image_page.share_image!.as_a(PageObjects::Images::ShareModal)
     assert_equal 'Please review the problems below:', share_new_image_page.flash_message(:danger)
     assert_equal "can't be blank", share_new_image_page.email_address.error_message
 
     share_new_image_page.email_address.set('invalid_email')
-    share_new_image_page = share_new_image_page.share_image!.as_a(PageObjects::Images::ShareNewPage)
+    share_new_image_page = share_new_image_page.share_image!.as_a(PageObjects::Images::ShareModal)
     assert_equal 'Please review the problems below:', share_new_image_page.flash_message(:danger)
     assert_equal 'is invalid', share_new_image_page.email_address.error_message
 

@@ -26,7 +26,7 @@ module PageObjects
 
       def open_share_page!
         node.click_on('Share')
-        window.change_to(ShareNewPage)
+        window.change_to(ShareModal)
       end
     end
   end

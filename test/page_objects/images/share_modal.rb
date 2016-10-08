@@ -1,6 +1,6 @@
 module PageObjects
   module Images
-    class ShareNewPage < PageObjects::Document
+    class ShareModal < PageObjects::Document
       path :share_new_image
       path :share_send_image # If create fails
 
