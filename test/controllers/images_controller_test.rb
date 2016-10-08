@@ -138,7 +138,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
   test 'share image successfully' do
     image = Image.create!(url: 'https://example.com')
     assert_difference 'ActionMailer::Base.deliveries.size', +1 do
-      post share_send_image_path(image),
+      post share_image_path(image),
            xhr: true,
            params: {
              share_form: {
@@ -162,7 +162,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
   test 'sharing image with no email address fails' do
     image = Image.create!(url: 'https://example.com')
     assert_difference 'ActionMailer::Base.deliveries.size', 0 do
-      post share_send_image_path(image),
+      post share_image_path(image),
            xhr: true,
            params: {
              share_form: {
@@ -174,14 +174,14 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
 
     response_form_html_string = Nokogiri::HTML.parse(response.parsed_body['share_form_html']).inner_html
     assert_match 'form', response_form_html_string
-    assert_match "action=\"#{share_send_image_path(image)}\"", response_form_html_string
+    assert_match "action=\"#{share_image_path(image)}\"", response_form_html_string
     assert_match "can't be blank", response_form_html_string
   end
 
   test 'share_send action invalid email error' do
     image = Image.create!(url: 'https://example.com')
     assert_difference 'ActionMailer::Base.deliveries.size', 0 do
-      post share_send_image_path(image),
+      post share_image_path(image),
            xhr: true,
            params: {
              share_form: {
@@ -194,13 +194,13 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
 
     response_form_html_string = response.parsed_body['share_form_html']
     assert_match 'form', response_form_html_string
-    assert_match "action=\"#{share_send_image_path(image)}\"", response_form_html_string
+    assert_match "action=\"#{share_image_path(image)}\"", response_form_html_string
     assert_match 'is invalid', response_form_html_string
   end
 
   test 'share_send action image does not exist' do
     assert_difference 'ActionMailer::Base.deliveries.size', 0 do
-      post share_send_image_path(-1),
+      post share_image_path(-1),
            xhr: true,
            params: {
              share_form: {

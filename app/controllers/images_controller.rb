@@ -1,6 +1,6 @@
 class ImagesController < ApplicationController
   before_action :find_image_or_redirect, only: [:show, :destroy]
-  before_action :find_image_or_head_not_found, only: :share_send
+  before_action :find_image_or_head_not_found, only: :share
 
   def index
     @image_list = ImageSelector.select params[:tag]
@@ -23,7 +23,7 @@ class ImagesController < ApplicationController
   def show
   end
 
-  def share_send
+  def share
     @share_form = ShareForm.new(email_params)
 
     if @share_form.valid?

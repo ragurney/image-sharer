@@ -1,4 +1,4 @@
-<%= simple_form_for share_form, url: image.nil? ? '' : share_send_image_path(image), remote: true do |f| %>
+<%= simple_form_for share_form, url: image.nil? ? '' : share_image_path(image), remote: true do |f| %>
   <div class="modal-body">
     <%= f.error_notification  %>
 
