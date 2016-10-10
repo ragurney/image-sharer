@@ -1,5 +1,5 @@
 class ImagesController < ApplicationController
-  before_action :find_image_or_redirect, only: [:show, :destroy]
+  before_action :find_image_or_redirect, only: [:show, :destroy, :edit]
   before_action :find_image_or_head_not_found, only: :share
 
   def index
@@ -18,6 +18,9 @@ class ImagesController < ApplicationController
     else
       render :new, status: :unprocessable_entity
     end
+  end
+
+  def edit
   end
 
   def show

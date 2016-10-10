@@ -247,6 +247,19 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'The image you were looking for does not exist', flash[:danger]
   end
 
+  test 'edit displays correct form' do
+    image = Image.create!(url: 'https://static.pexels.com/photos/7919/pexels-photo.jpg',
+                          tag_list: 'stuff, cool')
+    get edit_image_path(image)
+
+    assert_response :ok
+    assert_select 'img', 1
+    assert_select 'form[action=?]', "/images/#{image.id}"
+    assert_select 'img[src=?]', 'https://static.pexels.com/photos/7919/pexels-photo.jpg'
+    assert_select 'h1', 1, 'Edit Tags'
+    assert_select 'input[value=?]', image.tag_list.to_s
+  end
+
   private
 
   def create_images
