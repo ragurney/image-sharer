@@ -7,7 +7,7 @@ module PageObjects
               locator: '.js-image-card-container',
               is: ImageCard
 
-      delegate :delete, :delete_and_confirm!, :open_share_page!, to: :image
+      delegate :delete, :delete_and_confirm!, :open_share_page!, :share, to: :image
 
       def image_url
         node.find('img')[:src]
