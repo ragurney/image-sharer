@@ -14,7 +14,7 @@ class ImagesCrudTest < FlowTestCase
 
     new_image_page = new_image_page.add_image!(url: 'thisis.com/invalid?', tags: tags.join(', '))
       .as_a(PageObjects::Images::NewPage)
-    assert_equal 'Please review the problems below:', new_image_page.flash_message(:danger)
+    assert_equal 'Please review the problems below:', new_image_page.form_error_message
     assert_equal 'must be a valid url', new_image_page.url.error_message
     assert_equal tags.join(', '), new_image_page.tag_list.value
 

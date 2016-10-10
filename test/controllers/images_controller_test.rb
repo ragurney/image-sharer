@@ -33,15 +33,6 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'image show page has share button' do
-    image = Image.create!(url: 'http://validurl.com', tag_list: 'some, awesome, tags')
-
-    get image_path(image)
-
-    assert_response :ok
-    assert_select '.js-share-image[href=?]', share_new_image_path(image)
-  end
-
   test 'show page should redirect with error for nonexistent image' do
     get image_path(id: -1)
 
@@ -144,27 +135,11 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'share new displays correct form' do
-    image = Image.create!(url: 'https://static.pexels.com/photos/7919/pexels-photo.jpg')
-    get share_new_image_path(image)
-
-    assert_response :ok
-    assert_select 'img', 1
-    assert_select 'form[action=?]', share_send_image_path(image)
-    assert_select 'img[src=?]', 'https://static.pexels.com/photos/7919/pexels-photo.jpg'
-    assert_select 'h1', 1, 'Share Your Image'
-  end
-
-  test 'share new for nonexistent image displays correct flash message and redirects' do
-    get share_new_image_path(-1)
-    assert_redirected_to images_path
-    assert_equal 'The image you were looking for does not exist', flash[:danger]
-  end
-
   test 'share image successfully' do
     image = Image.create!(url: 'https://example.com')
     assert_difference 'ActionMailer::Base.deliveries.size', +1 do
-      post share_send_image_path(image),
+      post share_image_path(image),
+           xhr: true,
            params: {
              share_form: {
                email_address: 'example@example.com',
@@ -172,8 +147,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
              }
            }
     end
-    assert_redirected_to root_path
-    assert_equal 'Email successfully sent!', flash[:success]
+    assert_response :ok
 
     share_email = ActionMailer::Base.deliveries.last
     assert_equal 'Image Shared from Image-Sharer!', share_email.subject
@@ -188,7 +162,8 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
   test 'sharing image with no email address fails' do
     image = Image.create!(url: 'https://example.com')
     assert_difference 'ActionMailer::Base.deliveries.size', 0 do
-      post share_send_image_path(image),
+      post share_image_path(image),
+           xhr: true,
            params: {
              share_form: {
                message: 'Hi!'
@@ -196,14 +171,18 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
            }
     end
     assert_response :unprocessable_entity
-    assert_select 'form[action=?]', share_send_image_path(image)
-    assert_select '.text-help', "can't be blank"
+
+    response_form_html_string = Nokogiri::HTML.parse(response.parsed_body['share_form_html']).inner_html
+    assert_match 'form', response_form_html_string
+    assert_match "action=\"#{share_image_path(image)}\"", response_form_html_string
+    assert_match "can't be blank", response_form_html_string
   end
 
   test 'share_send action invalid email error' do
     image = Image.create!(url: 'https://example.com')
     assert_difference 'ActionMailer::Base.deliveries.size', 0 do
-      post share_send_image_path(image),
+      post share_image_path(image),
+           xhr: true,
            params: {
              share_form: {
                email_address: 'invalid',
@@ -212,13 +191,17 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
            }
     end
     assert_response :unprocessable_entity
-    assert_select 'form[action=?]', share_send_image_path(image)
-    assert_select '.text-help', 'is invalid'
+
+    response_form_html_string = response.parsed_body['share_form_html']
+    assert_match 'form', response_form_html_string
+    assert_match "action=\"#{share_image_path(image)}\"", response_form_html_string
+    assert_match 'is invalid', response_form_html_string
   end
 
   test 'share_send action image does not exist' do
     assert_difference 'ActionMailer::Base.deliveries.size', 0 do
-      post share_send_image_path(-1),
+      post share_image_path(-1),
+           xhr: true,
            params: {
              share_form: {
                email_address: 'valid@valid.com',
@@ -226,7 +209,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
              }
            }
     end
-    assert_redirected_to images_path
+    assert_response :not_found
     assert_equal 'The image you were looking for does not exist', flash[:danger]
   end
 

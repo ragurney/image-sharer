@@ -9,18 +9,14 @@
       <% end %>
     <% end %>
     <div class="card-block">
-      <% if ENV['SHARE_AS_MODAL'] %>
-        <%= button_tag 'Share',
-                       class: "js-share-image btn btn-info",
-                       data: {
-                         toggle: 'modal',
-                         target: '#share_image_modal',
-                         share_path: share_send_image_path(image),
-                         image_url: image.url
-                       } %>
-      <% else %>
-        <%= link_to 'Share', share_new_image_path(image), class: "js-share-image btn btn-info" %>
-      <% end %>
+      <%= button_tag 'Share',
+                     class: "js-share-image btn btn-info",
+                     data: {
+                       toggle: 'modal',
+                       target: '#share_image_modal',
+                       share_path: share_image_path(image),
+                       image_url: image.url
+                     } %>
       <%= link_to 'Delete', image_path(image), method: :delete,
                   class: "js-delete-image btn btn-danger",
                   'data-confirm': 'Are you sure you want to delete this image?' %>

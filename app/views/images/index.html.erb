@@ -10,3 +10,7 @@
 </div>
 
 <%= render 'share_modal', share_form: ShareForm.new, image: nil %>
+
+<% content_for :javascript do %>
+  <%= javascript_include_tag 'images/index/index' %>
+<% end %>

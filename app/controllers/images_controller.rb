@@ -1,5 +1,6 @@
 class ImagesController < ApplicationController
-  before_action :find_image_or_redirect, only: [:show, :share_new, :share_send, :destroy]
+  before_action :find_image_or_redirect, only: [:show, :destroy]
+  before_action :find_image_or_head_not_found, only: :share
 
   def index
     @image_list = ImageSelector.select params[:tag]
@@ -22,21 +23,13 @@ class ImagesController < ApplicationController
   def show
   end
 
-  def share_new
-    @share_form = ShareForm.new
-    render '_share_form'
-  end
-
-  def share_send
+  def share
     @share_form = ShareForm.new(email_params)
 
     if @share_form.valid?
-      ImageMailer.send_share_email(email_address: @share_form.email_address, message: @share_form.message,
-                                   url: @image.url).deliver_now
-      flash[:success] = 'Email successfully sent!'
-      redirect_to root_path
+      respond_to_valid_share_form
     else
-      render '_share_form', status: :unprocessable_entity
+      respond_to_invalid_share_form
     end
   end
 
@@ -60,6 +53,10 @@ class ImagesController < ApplicationController
     find_image_or { redirect_to images_path }
   end
 
+  def find_image_or_head_not_found
+    find_image_or { head :not_found }
+  end
+
   def find_image_or
     if (@image = Image.find_by(id: params[:id]))
       @image
@@ -67,5 +64,20 @@ class ImagesController < ApplicationController
       flash[:danger] = 'The image you were looking for does not exist'
       yield
     end
+  end
+
+  def respond_to_valid_share_form
+    ImageMailer.send_share_email(email_address: @share_form.email_address, message: @share_form.message,
+                                 url: @image.url).deliver_now
+    head :ok
+  end
+
+  def respond_to_invalid_share_form
+    share_form_html = render_to_string(
+      partial: 'images/share_form',
+      object: @share_form,
+      locals: { image: @image }
+    )
+    render json: { share_form_html: share_form_html }, status: :unprocessable_entity
   end
 end

@@ -9,6 +9,10 @@ module PageObjects
         element :tag_list
       end
 
+      def form_error_message
+        node.find('.alert.alert-danger').text
+      end
+
       def add_image!(url: nil, tags: nil)
         self.url.set(url) if url.present?
         tag_list.set(tags) if tags.present?

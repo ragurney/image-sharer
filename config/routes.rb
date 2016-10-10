@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   resources :images, except: [:edit, :update] do
     member do
       get :share_new
-      post :share_send
+      post :share
     end
   end
 

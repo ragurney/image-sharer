@@ -1,23 +1,20 @@
-<h1 class="text-xs-center">Share Your Image</h1>
+<%= simple_form_for share_form, url: image.nil? ? '' : share_image_path(image), remote: true do |f| %>
+  <div class="modal-body">
+    <%= f.error_notification  %>
 
-<div class="row">
-  <div class="col-xs-6">
-    <%= simple_form_for @share_form, url: share_send_image_path(@image)  do |f| %>
-        <%= f.error_notification  %>
+    <%= f.input :email_address,
+                label: "Recipient's email",
+                input_html: { placeholder: 'Enter email' } %>
+    <%= f.input :message,
+                label: 'Message (optional)',
+                as: :text,
+                input_html: { placeholder: 'Enter message' } %>
 
-        <%= f.input :email_address,
-                    label: "Recipient's email",
-                    input_html: { placeholder: 'Enter email' } %>
-        <%= f.input :message,
-                    label: 'Message (optional)',
-                    as: :text,
-                    input_html: { placeholder: 'Enter message' } %>
-
-        <div class="card text-xs-center">
-          <%= image_tag @image.url, class: 'image-tile card-img' %>
-        </div>
-
-        <%= f.button :submit, 'Send', class: 'btn btn-primary' %>
-    <% end %>
+    <div class="card text-xs-center">
+      <%= image_tag image.try(:url) || '', class: 'image-card image-card__figure' %>
+    </div>
   </div>
-</div>
+  <div class="modal-footer">
+    <%= f.button :submit, 'Share', class: 'btn btn-primary' %>
+  </div>
+<% end %>
