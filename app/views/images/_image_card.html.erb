@@ -10,7 +10,7 @@
     <% end %>
     <div class="card-block">
       <%= button_tag 'Share',
-                     class: "js-share-image btn btn-info",
+                     class: "js-share-image image-card__btn btn btn-info",
                      data: {
                        toggle: 'modal',
                        target: '#share_image_modal',
@@ -18,7 +18,7 @@
                        image_url: image.url
                      } %>
       <%= link_to 'Delete', image_path(image), method: :delete,
-                  class: "js-delete-image btn btn-danger",
+                  class: "js-delete-image image-card__btn btn btn-danger",
                   'data-confirm': 'Are you sure you want to delete this image?' %>
     </div>
   </div>
