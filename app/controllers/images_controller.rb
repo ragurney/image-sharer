@@ -1,5 +1,5 @@
 class ImagesController < ApplicationController
-  before_action :find_image_or_redirect, only: [:show, :destroy, :edit]
+  before_action :find_image_or_redirect, only: [:show, :destroy, :edit, :update]
   before_action :find_image_or_head_not_found, only: :share
 
   def index
@@ -21,6 +21,15 @@ class ImagesController < ApplicationController
   end
 
   def edit
+  end
+
+  def update
+    if @image.update(image_update_params)
+      flash[:success] = 'Tags successfully updated'
+      redirect_to image_path(@image)
+    else
+      render :edit, status: :unprocessable_entity
+    end
   end
 
   def show
@@ -46,6 +55,10 @@ class ImagesController < ApplicationController
 
   def image_params
     params.require(:image).permit(:url, :tag_list)
+  end
+
+  def image_update_params
+    params.require(:image).permit(:tag_list)
   end
 
   def email_params
