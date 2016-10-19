@@ -36,6 +36,11 @@ module PageObjects
         yield modal
         modal.wait_until_hidden
       end
+
+      def edit_tags!
+        node.click_on('Edit Tags')
+        window.change_to(EditPage)
+      end
     end
   end
 end
