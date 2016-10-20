@@ -1,4 +1,5 @@
 class ImagesController < ApplicationController
+  include Loginable
   before_action :find_image_or_redirect, only: [:show, :destroy, :edit, :update]
   before_action :find_image_or_head_not_found, only: :share
 
@@ -51,7 +52,7 @@ class ImagesController < ApplicationController
   private
 
   def image_params
-    params.require(:image).permit(:url, :tag_list)
+    params.require(:image).permit(:user_id, :url, :tag_list)
   end
 
   def image_update_params

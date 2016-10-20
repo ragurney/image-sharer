@@ -1,12 +1,16 @@
 require 'test_helper'
 
 class ImageSelectorTest < ActiveSupport::TestCase
+  def setup
+    @user = User.create!(email: 'admin@email.com', password: 'password123')
+  end
+
   test 'should show all images when pass nil for tags' do
-    image3 = Image.create!(url: 'http://www.validurl.com/image2.png', tag_list: 'tag4',
+    image3 = Image.create!(url: 'http://www.validurl.com/image2.png', tag_list: 'tag4', user_id: @user.id,
                            created_at: Time.zone.now)
     image1 = Image.create!(url: 'http://www.validurl.com/image.png', tag_list: 'tag1, tag2, tag3',
-                           created_at: Time.zone.now - 3.days)
-    image2 = Image.create!(url: 'http://www.validurl.com/image1.png', tag_list: 'tag1, tag2',
+                           user_id: @user.id, created_at: Time.zone.now - 3.days)
+    image2 = Image.create!(url: 'http://www.validurl.com/image1.png', tag_list: 'tag1, tag2', user_id: @user.id,
                            created_at: Time.zone.now - 2.days)
 
     result = ImageSelector.select nil
@@ -16,14 +20,14 @@ class ImageSelectorTest < ActiveSupport::TestCase
   end
 
   test 'should show specified image when tag is selected' do
-    Image.create!(url: 'http://www.validurl.com/image2.png', tag_list: 'tag4',
+    Image.create!(url: 'http://www.validurl.com/image2.png', tag_list: 'tag4', user_id: @user.id,
                   created_at: Time.zone.now)
     image1 = Image.create!(url: 'http://www.validurl.com/image.png', tag_list: 'tag1, tag2, tag3',
-                           created_at: Time.zone.now - 3.days)
+                           user_id: @user.id, created_at: Time.zone.now - 3.days)
     image2 = Image.create!(url: 'http://www.validurl.com/image1.png', tag_list: 'tag1, tag2',
-                           created_at: Time.zone.now - 2.days)
+                           user_id: @user.id, created_at: Time.zone.now - 2.days)
     Image.create!(url: 'http://www.validurl.com/image1.png', tag_list: 'tag1, tag3',
-                  created_at: Time.zone.now - 1.day)
+                  user_id: @user.id, created_at: Time.zone.now - 1.day)
 
     result = ImageSelector.select 'tag2'
     expected = [image2, image1]
@@ -33,13 +37,13 @@ class ImageSelectorTest < ActiveSupport::TestCase
 
   test 'should show no images when invalid tag is passed' do
     Image.create!(url: 'http://www.validurl.com/image2.png', tag_list: 'tag4',
-                  created_at: Time.zone.now)
+                  user_id: @user.id, created_at: Time.zone.now)
     Image.create!(url: 'http://www.validurl.com/image.png', tag_list: 'tag1, tag2, tag3',
-                  created_at: Time.zone.now - 3.days)
+                  user_id: @user.id, created_at: Time.zone.now - 3.days)
     Image.create!(url: 'http://www.validurl.com/image1.png', tag_list: 'tag1, tag2',
-                  created_at: Time.zone.now - 2.days)
+                  user_id: @user.id, created_at: Time.zone.now - 2.days)
     Image.create!(url: 'http://www.validurl.com/image1.png', tag_list: 'tag1, tag3',
-                  created_at: Time.zone.now - 1.day)
+                  user_id: @user.id, created_at: Time.zone.now - 1.day)
 
     result = ImageSelector.select 'invalid'
 

@@ -1,12 +1,16 @@
 require 'flow_test_helper'
 
 class ShareImageTest < FlowTestCase
+  def setup
+    @user = User.create!(email: 'valid@email.com', password: 'password123')
+  end
+
   test 'share image successfully from index page' do
     happening_url = 'https://media.giphy.com/media/rl0FOxdz7CcxO/giphy.gif'
     mind_blown_url = 'https://media.giphy.com/media/EldfH1VJdbrwY/giphy.gif'
     Image.create!([
-      { url: happening_url, tag_list: 'its, really, happening' },
-      { url: mind_blown_url, tag_list: 'mind, totally, blown' }
+      { url: happening_url, tag_list: 'its, really, happening', user_id: @user.id },
+      { url: mind_blown_url, tag_list: 'mind, totally, blown', user_id: @user.id }
     ])
 
     images_index_page = PageObjects::Images::IndexPage.visit
@@ -42,8 +46,8 @@ class ShareImageTest < FlowTestCase
     happening_url = 'https://media.giphy.com/media/rl0FOxdz7CcxO/giphy.gif'
     mind_blown_url = 'https://media.giphy.com/media/EldfH1VJdbrwY/giphy.gif'
     images = Image.create!([
-      { url: happening_url, tag_list: 'its, really, happening' },
-      { url: mind_blown_url, tag_list: 'mind, totally, blown' }
+      { url: happening_url, tag_list: 'its, really, happening', user_id: @user.id },
+      { url: mind_blown_url, tag_list: 'mind, totally, blown', user_id: @user.id }
     ])
 
     images_show_page = PageObjects::Images::ShowPage.visit(images[0])
@@ -69,7 +73,7 @@ class ShareImageTest < FlowTestCase
 
   test 'share nonexistent image' do
     happening_url = 'https://media.giphy.com/media/rl0FOxdz7CcxO/giphy.gif'
-    created_image = Image.create!(url: happening_url, tag_list: 'its, really, happening')
+    created_image = Image.create!(url: happening_url, tag_list: 'its, really, happening', user_id: @user.id)
 
     images_index_page = PageObjects::Images::IndexPage.visit
     image_to_share = images_index_page.images.find do |image|
