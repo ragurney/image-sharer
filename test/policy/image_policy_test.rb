@@ -10,4 +10,25 @@ class ImagePolicyTest < ActiveSupport::TestCase
     policy = ImagePolicy.new(mock, nil)
     assert_predicate policy, :create?
   end
+
+  test 'destroy? returns false if no user is present' do
+    policy = ImagePolicy.new(nil, nil)
+    refute_predicate policy, :destroy?
+  end
+
+  test 'destroy? returns true if user is present and record user matches current user' do
+    user_mock = mock
+    record_mock = mock(user: user_mock)
+
+    policy = ImagePolicy.new(user_mock, record_mock)
+    assert_predicate policy, :destroy?
+  end
+
+  test 'destroy? returns true if user is present and record user does not match current user' do
+    user_mock = mock
+    record_mock = mock(user: mock)
+
+    policy = ImagePolicy.new(user_mock, record_mock)
+    refute_predicate policy, :destroy?
+  end
 end

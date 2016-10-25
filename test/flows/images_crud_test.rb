@@ -72,7 +72,11 @@ class ImagesCrudTest < FlowTestCase
       { url: mind_blown_url, tag_list: 'mind, totally, blown', user_id: @user.id }
     ])
 
-    images_index_page = PageObjects::Images::IndexPage.visit
+    sessions_new_page = PageObjects::Sessions::NewPage.visit
+
+    images_index_page = sessions_new_page.log_in!(email: @user.email, password: 'password123')
+    assert_equal 'Successfully signed in!', images_index_page.flash_message(:success)
+
     assert_equal 2, images_index_page.images.count
     assert images_index_page.showing_image?(url: mind_blown_url)
     assert images_index_page.showing_image?(url: nyan_cat_url)

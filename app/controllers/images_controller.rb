@@ -50,6 +50,7 @@ class ImagesController < ApplicationController
   end
 
   def destroy
+    authorize @image
     @image.destroy
     redirect_to images_path, flash: { success: 'Image successfully deleted!' }
   end

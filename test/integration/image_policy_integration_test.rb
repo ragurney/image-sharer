@@ -52,6 +52,50 @@ class ImagePolicyIntegrationTest < ActionDispatch::IntegrationTest
     assert_select 'a', text: 'New Image', count: 2
   end
 
+  test 'delete authorization error -> login -> redirect to show path' do
+    image = Image.create!(url: 'https://valid.com/stuff.png', tag_list: 'tag', user_id: @user.id)
+
+    delete image_path(image)
+
+    assert_redirected_to new_session_path
+    assert_equal 'You must log in before accessing that page!', flash[:danger]
+
+    log_in_as(
+      email: @user.email,
+      password: @user.password
+    )
+
+    assert_redirected_to image_path(image)
+    assert_equal 'That action could not be completed, please try again.', flash[:danger]
+  end
+
+  test 'all delete buttons are hidden if user is not logged in' do
+    Image.create!([
+      { url: 'https://valid.com/stuff.png', tag_list: 'tag', user_id: @user.id },
+      { url: 'https://valid.com/stuff1.png', tag_list: 'tag1', user_id: @user.id },
+      { url: 'https://valid.com/stuff2.png', tag_list: 'tag2', user_id: @user.id }
+    ])
+
+    get images_path
+
+    assert_select 'a.js-delete-image', 0
+  end
+
+  test 'delete buttons only shown on images that belong to logged in user' do
+    user2 = User.create!(email: 'valid1@email.com', password: 'password123')
+    images = Image.create!([
+      { url: 'https://valid.com/stuff.png', tag_list: 'tag', user_id: @user.id },
+      { url: 'https://valid.com/stuff1.png', tag_list: 'tag1', user_id: user2.id },
+      { url: 'https://valid.com/stuff2.png', tag_list: 'tag2', user_id: user2.id }
+    ])
+
+    log_in_as(email: @user.email, password: @user.password)
+
+    get images_path
+
+    assert_select 'a.js-delete-image', count: 1, text: 'Delete', href: "/images/#{images[0]}"
+  end
+
   private
 
   def log_in_as(email:, password:)
