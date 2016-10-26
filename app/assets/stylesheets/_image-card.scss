@@ -4,6 +4,10 @@
   box-shadow: 0 1px 2px rgba(34, 25, 25, 0.4);
 }
 
+.image-card__btn {
+  margin-bottom: 2px;
+}
+
 .image-card__figure {
   max-width: 100%;
   border-bottom: 4px solid $image-card-border-color;

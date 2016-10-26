@@ -1,0 +1,14 @@
+<h1 class="text-xs-center">Edit Tags</h1>
+
+<div class="row">
+  <div class="col-xs-6">
+    <%= simple_form_for @image do |f| %>
+        <%= f.error_notification  %>
+
+        <%= image_tag @image.url, class: 'text-xs-center card image-card image'%>
+
+        <%= f.input :tag_list, label: 'Edit tags', input_html: { value: @image.tag_list.to_s } %>
+        <%= f.button :submit, 'Update', class: 'btn btn-primary' %>
+    <% end %>
+  </div>
+</div>

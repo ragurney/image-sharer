@@ -31,6 +31,28 @@ class ImagesCrudTest < FlowTestCase
     assert images_index_page.showing_image?(url: image_url, tags: tags)
   end
 
+  test 'add image and then update its tags' do
+    image_url = 'https://media.giphy.com/media/rl0FOxdz7CcxO/giphy.gif'
+    tags = %w(foo bar)
+
+    image = Image.create!(url: image_url, tag_list: tags)
+
+    image_show_page = PageObjects::Images::ShowPage.visit(image)
+
+    edit_image_page = image_show_page.edit_tags!
+
+    edit_image_page.tag_list.set('')
+
+    edit_image_page = edit_image_page.update!.as_a(PageObjects::Images::EditPage)
+    assert_equal 'Please review the problems below:', edit_image_page.form_error_message
+    assert_equal 'must have at least one tag', edit_image_page.tag_list.error_message
+
+    images_show_page = edit_image_page.update!(tags: 'new tag')
+
+    assert_equal image_url, images_show_page.image_url
+    assert_equal ['new tag'], images_show_page.tags
+  end
+
   test 'delete an image' do
     nyan_cat_url = 'https://media.giphy.com/media/SdhYdt5jkOdnG/giphy.gif'
     mind_blown_url = 'https://media.giphy.com/media/EldfH1VJdbrwY/giphy.gif'

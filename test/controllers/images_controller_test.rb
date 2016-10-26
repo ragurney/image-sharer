@@ -247,6 +247,47 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'The image you were looking for does not exist', flash[:danger]
   end
 
+  test 'edit displays correct form' do
+    image = Image.create!(url: 'https://static.pexels.com/photos/7919/pexels-photo.jpg',
+                          tag_list: 'stuff, cool')
+    get edit_image_path(image)
+
+    assert_response :ok
+    assert_select 'img', 1
+    assert_select 'form[action=?]', "/images/#{image.id}"
+    assert_select 'img[src=?]', 'https://static.pexels.com/photos/7919/pexels-photo.jpg'
+    assert_select 'h1', 1, 'Edit Tags'
+    assert_select 'input[value=?]', image.tag_list.to_s
+  end
+
+  test 'successful tag update should redirect to index and display flash message' do
+    image = Image.create!(url: 'https://validurl.com', tag_list: 'stuff')
+
+    patch image_path(image), params: { image: { tag_list: 'neat, my_tag, other_tag' } }
+
+    assert_redirected_to image_path
+    assert_equal 'neat, my_tag, other_tag', image.reload.tag_list.to_s
+    assert_equal 'Tags successfully updated', flash[:success]
+  end
+
+  test 'update tag list with no tags' do
+    image = Image.create!(url: 'https://validurl.com', tag_list: 'stuff')
+
+    assert_no_difference 'image.tag_list.count' do
+      patch image_path(image), params: { image: { tag_list: '' } }
+    end
+
+    assert_response :unprocessable_entity
+    assert_select '.image_tag_list .text-help', 'must have at least one tag'
+  end
+
+  test 'submit form with nonexistent image' do
+    patch image_path(-1), params: { image: { tag_list: 'neat, my_tag, other_tag' } }
+
+    assert_redirected_to images_path
+    assert_equal 'The image you were looking for does not exist', flash[:danger]
+  end
+
   private
 
   def create_images
