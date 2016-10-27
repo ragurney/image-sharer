@@ -1,9 +1,16 @@
 <nav class="navbar navbar-fixed-top navbar-light bg-faded">
   <div class="container">
     <%= link_to 'Image-Tiles', images_path, class: 'navbar-brand' %>
-    <ul class="nav navbar-nav">
+    <ul class="nav navbar-nav pull-xs-left">
       <%= nav_item 'All Images', images_path, class: 'nav-link' %>
       <%= nav_item 'New Image', new_image_path, class: 'nav-link' %>
+    </ul>
+    <ul class="nav navbar-nav navbar-right pull-xs-right">
+      <% if logged_in? %>
+        <%= nav_item 'Log out', session_path, method: :delete, class: 'nav-link' %>
+      <% else %>
+        <%= nav_item 'Log in', new_session_path, class: 'nav-link' %>
+      <% end %>
     </ul>
   </div>
 </nav>

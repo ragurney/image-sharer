@@ -48,6 +48,7 @@ GEM
     ast (2.3.0)
     autoprefixer-rails (6.4.0.3)
       execjs
+    bcrypt (3.1.11)
     bootstrap (4.0.0.alpha3.1)
       autoprefixer-rails (>= 6.0.3)
       sass (>= 3.4.19)
@@ -226,6 +227,7 @@ PLATFORMS
 DEPENDENCIES
   acts-as-taggable-on (~> 4.0)
   ae_page_objects
+  bcrypt (~> 3.1.7)
   bootstrap (~> 4.0.0.alpha3)
   browserify-rails
   byebug

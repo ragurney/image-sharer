@@ -1,0 +1,17 @@
+<h1 class="text-xs-center">Log In</h1>
+
+<div class="row">
+  <div class="col-xs-6">
+    <%= simple_form_for @session do |f| %>
+        <%= f.error_notification  %>
+
+        <%= f.input :email, label: 'Enter username (email)',
+                    input_html: { placeholder: 'username (email address)'} %>
+        <%= f.input :password, label: 'Enter password', placeholder: 'password'%>
+        <%= f.input :remember_me, as: :boolean, inline_label: 'Remember me' %>
+        <%= f.button :submit, 'Log in', class: 'btn btn-primary' %>
+    <% end %>
+
+    <p>Don't have an account yet? <%= link_to 'Sign up', new_user_path %> here!</p>
+  </div>
+</div>
