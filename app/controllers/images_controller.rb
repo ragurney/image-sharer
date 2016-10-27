@@ -26,9 +26,11 @@ class ImagesController < ApplicationController
   end
 
   def edit
+    authorize @image
   end
 
   def update
+    authorize @image
     if @image.update(image_update_params)
       redirect_to image_path(@image), flash: { success: 'Tags successfully updated' }
     else

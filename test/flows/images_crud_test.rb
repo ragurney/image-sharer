@@ -46,11 +46,18 @@ class ImagesCrudTest < FlowTestCase
     image_url = 'https://media.giphy.com/media/rl0FOxdz7CcxO/giphy.gif'
     tags = %w(foo bar)
 
-    image = Image.create!(url: image_url, tag_list: tags, user_id: @user.id)
+    Image.create!(url: image_url, tag_list: tags, user_id: @user.id)
 
-    image_show_page = PageObjects::Images::ShowPage.visit(image)
+    sessions_new_page = PageObjects::Sessions::NewPage.visit
 
-    edit_image_page = image_show_page.edit_tags!
+    images_index_page = sessions_new_page.log_in!(email: @user.email, password: 'password123')
+    assert_equal 'Successfully signed in!', images_index_page.flash_message(:success)
+
+    image_to_edit = images_index_page.images.find do |image|
+      image.url == image_url
+    end
+
+    edit_image_page = image_to_edit.edit_tags!
 
     edit_image_page.tag_list.set('')
 
