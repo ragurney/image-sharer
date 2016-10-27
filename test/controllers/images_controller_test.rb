@@ -47,8 +47,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
            params: {
              image: {
                url: @url,
-               tag_list: 'tag',
-               user_id: @user.id
+               tag_list: 'tag'
              }
            }
     end
@@ -63,8 +62,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
            params: {
              image: {
                url: @url,
-               tag_list: 'tag1, tag2, tag3',
-               user_id: @user.id
+               tag_list: 'tag1, tag2, tag3'
              }
            }
     end
@@ -78,8 +76,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
            params: {
              image: {
                url: 'invalid',
-               tag_list: 'tag',
-               user_id: @user.id
+               tag_list: 'tag'
              }
            }
     end
@@ -95,8 +92,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
            params: {
              image: {
                url: @url,
-               tag_list: '',
-               user_id: @user.id
+               tag_list: ''
              }
            }
     end

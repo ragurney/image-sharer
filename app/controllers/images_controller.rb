@@ -2,6 +2,9 @@ class ImagesController < ApplicationController
   include Loginable
   before_action :find_image_or_redirect, only: [:show, :destroy, :edit, :update]
   before_action :find_image_or_head_not_found, only: :share
+  before_action -> { save_previous_path(request) }, except: :share
+
+  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
   def index
     @image_list = ImageSelector.select params[:tag]
@@ -9,10 +12,12 @@ class ImagesController < ApplicationController
 
   def new
     @image = Image.new
+    authorize @image
   end
 
   def create
-    @image = Image.new(image_params)
+    @image = Image.new(image_params.merge(user: current_user))
+    authorize @image
     if @image.save
       redirect_to image_path(@image), flash: { success: 'Url successfully saved!' }
     else
@@ -52,7 +57,7 @@ class ImagesController < ApplicationController
   private
 
   def image_params
-    params.require(:image).permit(:user_id, :url, :tag_list)
+    params.require(:image).permit(:url, :tag_list)
   end
 
   def image_update_params
@@ -93,5 +98,9 @@ class ImagesController < ApplicationController
       locals: { image: @image }
     )
     render json: { share_form_html: share_form_html }, status: :unprocessable_entity
+  end
+
+  def user_not_authorized
+    redirect_to new_session_path, flash: { danger: 'You must log in before accessing that page!' }
   end
 end

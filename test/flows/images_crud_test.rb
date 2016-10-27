@@ -5,6 +5,10 @@ class ImagesCrudTest < FlowTestCase
     @user = User.create!(email: 'valid@email.com', password: 'password123')
   end
 
+  def teardown
+    Capybara.reset_sessions!
+  end
+
   test 'add an image' do
     sessions_new_page = PageObjects::Sessions::NewPage.visit
 
