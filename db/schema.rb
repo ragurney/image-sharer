@@ -10,14 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161020222518) do
+ActiveRecord::Schema.define(version: 20161028173540) do
 
   create_table "images", force: :cascade do |t|
-    t.string   "url",                    null: false
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-    t.integer  "user_id",    default: 1, null: false
+    t.string   "url",                     null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.integer  "user_id",     default: 1, null: false
+    t.integer  "likes_count", default: 0, null: false
     t.index ["user_id"], name: "index_images_on_user_id"
+  end
+
+  create_table "likes", force: :cascade do |t|
+    t.integer "image_id", null: false
+    t.integer "user_id",  null: false
+    t.index ["image_id"], name: "index_likes_on_image_id"
+    t.index ["user_id"], name: "index_likes_on_user_id"
   end
 
   create_table "taggings", force: :cascade do |t|

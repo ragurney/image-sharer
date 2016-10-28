@@ -46,4 +46,29 @@ class ImageTest < ActiveSupport::TestCase
     assert_predicate image, :invalid?
     assert_equal ['must have at least one tag'], image.errors.messages[:tag_list]
   end
+
+  test 'should return false if no user is logged in' do
+    user = User.create!(email: 'valid@email.com', password: 'password123')
+    image = Image.create!(url: 'https://valid.com/p.png', tag_list: 'tags', user_id: user.id)
+    stubs(:current_user).returns(nil).once
+
+    refute image.liked_by?(current_user), 'should have returned false, image was not liked by user'
+  end
+
+  test 'should return false if image was not liked by current user' do
+    user = User.create!(email: 'valid@email.com', password: 'password123')
+    image = Image.create!(url: 'https://valid.com/p.png', tag_list: 'tags', user_id: user.id)
+    stubs(:current_user).returns(user).once
+
+    refute image.liked_by?(current_user), 'should have returned false, image was not liked by user'
+  end
+
+  test 'should return true if image was not liked by current user' do
+    user = User.create!(email: 'valid@email.com', password: 'password123')
+    image = Image.create!(url: 'https://valid.com/p.png', tag_list: 'tags', user_id: user.id)
+    Like.create!(image: image, user: user)
+    stubs(:current_user).returns(user).once
+
+    assert image.liked_by?(current_user), 'should have returned true, image was liked by user'
+  end
 end
