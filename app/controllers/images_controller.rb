@@ -13,8 +13,7 @@ class ImagesController < ApplicationController
   def create
     @image = Image.new(image_params)
     if @image.save
-      flash[:success] = 'Url successfully saved!'
-      redirect_to image_path(@image)
+      redirect_to image_path(@image), flash: { success: 'Url successfully saved!' }
     else
       render :new, status: :unprocessable_entity
     end
@@ -25,8 +24,7 @@ class ImagesController < ApplicationController
 
   def update
     if @image.update(image_update_params)
-      flash[:success] = 'Tags successfully updated'
-      redirect_to image_path(@image)
+      redirect_to image_path(@image), flash: { success: 'Tags successfully updated' }
     else
       render :edit, status: :unprocessable_entity
     end
@@ -47,8 +45,7 @@ class ImagesController < ApplicationController
 
   def destroy
     @image.destroy
-    flash[:success] = 'Image successfully deleted!'
-    redirect_to images_path
+    redirect_to images_path, flash: { success: 'Image successfully deleted!' }
   end
 
   private
