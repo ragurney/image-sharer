@@ -1,8 +1,8 @@
 class ImagesController < ApplicationController
   include Loginable
   before_action :find_image_or_redirect, only: [:show, :destroy, :edit, :update]
-  before_action :find_image_or_head_not_found, only: :share
-  before_action -> { save_previous_path(request) }, except: :share
+  before_action :find_image_or_head_not_found, only: [:share, :like]
+  before_action -> { save_previous_path(request) }, except: [:share, :like]
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
@@ -44,17 +44,25 @@ class ImagesController < ApplicationController
   def share
     @share_form = ShareForm.new(email_params)
 
-    if @share_form.valid?
-      respond_to_valid_share_form
-    else
-      respond_to_invalid_share_form
-    end
+    @share_form.valid? ? respond_to_valid_share_form : respond_to_invalid_share_form
   end
 
   def destroy
     authorize @image
     @image.destroy
     redirect_to images_path, flash: { success: 'Image successfully deleted!' }
+  end
+
+  def like
+    authorize @image
+
+    if @image.liked_by?(current_user)
+      Like.find_by(image: @image, user: current_user).destroy
+    else
+      Like.create!(image: @image, user: current_user)
+    end
+
+    render json: { likeCount: @image.reload.likes_count }, status: :ok
   end
 
   private
@@ -104,6 +112,11 @@ class ImagesController < ApplicationController
   end
 
   def user_not_authorized
-    redirect_to new_session_path, flash: { danger: 'You must log in before accessing that page!' }
+    respond_to do |format|
+      format.json { head :unauthorized }
+      format.html do
+        redirect_to new_session_path, flash: { danger: 'You must log in before accessing that page!' }
+      end
+    end
   end
 end

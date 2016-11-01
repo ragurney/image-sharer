@@ -52,4 +52,14 @@ class ImagePolicyTest < ActiveSupport::TestCase
     policy = ImagePolicy.new(user_mock, record_mock)
     refute_predicate policy, :update?
   end
+
+  test 'like? returns false if no user is present' do
+    policy = ImagePolicy.new(nil, nil)
+    refute_predicate policy, :like?
+  end
+
+  test 'like? returns true if user is present' do
+    policy = ImagePolicy.new(mock, nil)
+    assert_predicate policy, :like?
+  end
 end

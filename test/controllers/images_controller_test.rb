@@ -289,6 +289,37 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'The image you were looking for does not exist', flash[:danger]
   end
 
+
+  test 'Liking an image should create a new Like record' do
+    image = Image.create!(url: 'https://valid.com', tag_list: 'tag', user_id: @user.id)
+    assert_difference 'Like.count', 1 do
+      post like_image_path(image.id),
+           xhr: true
+    end
+    assert_response :ok
+  end
+
+  test 'Liking an image that user has already liked should decrement like count' do
+    image = Image.create!(url: 'https://valid.com', tag_list: 'tag', user_id: @user.id)
+    Like.create!(image: image, user: @user)
+
+    assert_difference 'Like.count', -1 do
+      post like_image_path(image.id),
+           xhr: true
+    end
+
+    assert_response :ok
+  end
+
+  test 'Like a non-existent image should redirect to image page and show flash message' do
+    assert_difference 'Like.count', 0 do
+      post like_image_path(-1),
+           xhr: true
+    end
+    assert_response :not_found
+    assert_equal 'The image you were looking for does not exist', flash[:danger]
+  end
+
   private
 
   def create_images
