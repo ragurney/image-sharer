@@ -31,6 +31,8 @@ end
 gem 'validate_url'
 gem 'email_validator'
 gem 'pundit'
+gem 'font-awesome-rails'
+gem 'fetch-rails'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
