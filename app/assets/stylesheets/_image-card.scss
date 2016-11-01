@@ -17,3 +17,13 @@
   font-size: 1em;
   margin-bottom: 2px;
 }
+
+.image-card__likebutton {
+  float: right;
+
+  &.image-card__liked {
+    background-color: #c1d9ff;
+  }
+}
+
+

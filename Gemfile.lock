@@ -77,6 +77,8 @@ GEM
     fetch-rails (1.0.0)
       rails (>= 4.1.0)
     ffi (1.9.10)
+    font-awesome-rails (4.7.0.0)
+      railties (>= 3.2, < 5.1)
     gitlab (3.6.1)
       httparty
       terminal-table
