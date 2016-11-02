@@ -4,7 +4,6 @@
   <div class="col-xs-6">
     <%= simple_form_for @image do |f| %>
       <%= f.error_notification  %>
-
       <%= f.input :url, label: 'Enter URL', input_html: { placeholder: 'Enter Image URL'} %>
       <%= f.input :tag_list, label: 'Enter tags', placeholder: 'Enter tags (separated by commas)',
                   input_html: { value: @image.tag_list.to_s } %>

@@ -1,8 +1,19 @@
 require 'flow_test_helper'
 
 class ImagesCrudTest < FlowTestCase
+  def setup
+    @user = User.create!(email: 'valid@email.com', password: 'password123')
+  end
+
+  def teardown
+    Capybara.reset_sessions!
+  end
+
   test 'add an image' do
-    images_index_page = PageObjects::Images::IndexPage.visit
+    sessions_new_page = PageObjects::Sessions::NewPage.visit
+
+    images_index_page = sessions_new_page.log_in!(email: @user.email, password: 'password123')
+    assert_equal 'Successfully signed in!', images_index_page.flash_message(:success)
 
     new_image_page = images_index_page.add_new_image!
 
@@ -35,11 +46,18 @@ class ImagesCrudTest < FlowTestCase
     image_url = 'https://media.giphy.com/media/rl0FOxdz7CcxO/giphy.gif'
     tags = %w(foo bar)
 
-    image = Image.create!(url: image_url, tag_list: tags)
+    Image.create!(url: image_url, tag_list: tags, user_id: @user.id)
 
-    image_show_page = PageObjects::Images::ShowPage.visit(image)
+    sessions_new_page = PageObjects::Sessions::NewPage.visit
 
-    edit_image_page = image_show_page.edit_tags!
+    images_index_page = sessions_new_page.log_in!(email: @user.email, password: 'password123')
+    assert_equal 'Successfully signed in!', images_index_page.flash_message(:success)
+
+    image_to_edit = images_index_page.images.find do |image|
+      image.url == image_url
+    end
+
+    edit_image_page = image_to_edit.edit_tags!
 
     edit_image_page.tag_list.set('')
 
@@ -57,11 +75,15 @@ class ImagesCrudTest < FlowTestCase
     nyan_cat_url = 'https://media.giphy.com/media/SdhYdt5jkOdnG/giphy.gif'
     mind_blown_url = 'https://media.giphy.com/media/EldfH1VJdbrwY/giphy.gif'
     Image.create!([
-      { url: nyan_cat_url, tag_list: 'cat, wow, cool' },
-      { url: mind_blown_url, tag_list: 'mind, totally, blown' }
+      { url: nyan_cat_url, tag_list: 'cat, wow, cool', user_id: @user.id },
+      { url: mind_blown_url, tag_list: 'mind, totally, blown', user_id: @user.id }
     ])
 
-    images_index_page = PageObjects::Images::IndexPage.visit
+    sessions_new_page = PageObjects::Sessions::NewPage.visit
+
+    images_index_page = sessions_new_page.log_in!(email: @user.email, password: 'password123')
+    assert_equal 'Successfully signed in!', images_index_page.flash_message(:success)
+
     assert_equal 2, images_index_page.images.count
     assert images_index_page.showing_image?(url: mind_blown_url)
     assert images_index_page.showing_image?(url: nyan_cat_url)
@@ -90,9 +112,9 @@ class ImagesCrudTest < FlowTestCase
     puppy_url_2 = 'http://ghk.h-cdn.co/assets/16/09/980x490/landscape-1457107485-gettyimages-512366437.jpg'
     cat_url = 'http://www.ugly-cat.com/ugly-cats/uglycat041.jpg'
     Image.create!([
-      { url: puppy_url_1, tag_list: 'superman, cute' },
-      { url: puppy_url_2, tag_list: 'cute, puppy' },
-      { url: cat_url, tag_list: 'cat, ugly' }
+      { url: puppy_url_1, tag_list: 'superman, cute', user_id: @user.id },
+      { url: puppy_url_2, tag_list: 'cute, puppy', user_id: @user.id },
+      { url: cat_url, tag_list: 'cat, ugly', user_id: @user.id }
     ])
 
     images_index_page = PageObjects::Images::IndexPage.visit

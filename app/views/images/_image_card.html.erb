@@ -18,10 +18,10 @@
                        image_url: image.url
                      } %>
       <%= link_to 'Edit Tags', edit_image_path(image),
-                  class:"js-edit-image-tags image-card__btn btn btn-warning" %>
+                  class:"js-edit-image-tags image-card__btn btn btn-warning" if policy(image).update? %>
       <%= link_to 'Delete', image_path(image), method: :delete,
                   class: "js-delete-image image-card__btn btn btn-danger",
-                  'data-confirm': 'Are you sure you want to delete this image?' %>
+                  'data-confirm': 'Are you sure you want to delete this image?' if policy(image).destroy? %>
     </div>
   </div>
 </div>

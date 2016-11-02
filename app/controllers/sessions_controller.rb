@@ -31,12 +31,24 @@ class SessionsController < ApplicationController
   def authenticate_and_login
     user = User.find_by(email: session_params[:email].downcase)
     if user && user.authenticate(@session.password)
-      log_in(user)
-      remember(user) if @session.remember_me == '1'
-      redirect_to(root_path, flash: { success: 'Successfully signed in!' })
+      handle_user_login(user)
+      set_flash_if_previous_action_not_get
+
+      redirect_to(session[:previous_path] || root_path, flash: { success: 'Successfully signed in!' })
     else
       flash[:danger] = 'There was a problem with your username and/or password'
       render :new, status: :bad_request
+    end
+  end
+
+  def handle_user_login(user)
+    log_in(user)
+    remember(user) if @session.remember_me == '1'
+  end
+
+  def set_flash_if_previous_action_not_get
+    if session[:previous_request_was_get] == 'false'
+      flash[:danger] = 'That action could not be completed, please try again.'
     end
   end
 

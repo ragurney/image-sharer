@@ -2,6 +2,7 @@ require 'test_helper'
 
 class ImagesControllerTest < ActionDispatch::IntegrationTest
   setup do
+    create_user_and_log_in
     @url = 'https://www.google.com/image1.jpg'
   end
 
@@ -14,7 +15,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'show page should display correct image' do
-    image = Image.create!(url: @url, tag_list: 'tag')
+    image = Image.create!(url: @url, tag_list: 'tag', user_id: @user.id)
     get image_path(image)
 
     assert_response :ok
@@ -23,7 +24,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
 
   test 'show page should display image tags' do
     tags = %w(tag1 tag2 tag3)
-    image = Image.create!(url: @url, tag_list: tags.join(', '))
+    image = Image.create!(url: @url, tag_list: tags.join(', '), user_id: @user.id)
     get image_path(image)
 
     assert_select 'span.image-card__tag', 3 do |spans|
@@ -154,7 +155,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'share image successfully' do
-    image = Image.create!(url: 'https://example.com', tag_list: 'tag')
+    image = Image.create!(url: 'https://example.com', tag_list: 'tag', user_id: @user.id)
     assert_difference 'ActionMailer::Base.deliveries.size', +1 do
       post share_image_path(image),
            xhr: true,
@@ -178,7 +179,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'sharing image with no email address fails' do
-    image = Image.create!(url: 'https://example.com', tag_list: 'tag')
+    image = Image.create!(url: 'https://example.com', tag_list: 'tag', user_id: @user.id)
     assert_difference 'ActionMailer::Base.deliveries.size', 0 do
       post share_image_path(image),
            xhr: true,
@@ -197,7 +198,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'share_send action invalid email error' do
-    image = Image.create!(url: 'https://example.com', tag_list: 'tag')
+    image = Image.create!(url: 'https://example.com', tag_list: 'tag', user_id: @user.id)
     assert_difference 'ActionMailer::Base.deliveries.size', 0 do
       post share_image_path(image),
            xhr: true,
@@ -232,7 +233,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'delete removes image successfully' do
-    image = Image.create!(url: 'https://www.google.com/image2.png', tag_list: 'tag')
+    image = Image.create!(url: 'https://www.google.com/image2.png', tag_list: 'tag', user_id: @user.id)
 
     assert_difference 'Image.count', -1 do
       delete image_path(image)
@@ -249,7 +250,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
 
   test 'edit displays correct form' do
     image = Image.create!(url: 'https://static.pexels.com/photos/7919/pexels-photo.jpg',
-                          tag_list: 'stuff, cool')
+                          tag_list: 'stuff, cool', user_id: @user.id)
     get edit_image_path(image)
 
     assert_response :ok
@@ -261,7 +262,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'successful tag update should redirect to index and display flash message' do
-    image = Image.create!(url: 'https://validurl.com', tag_list: 'stuff')
+    image = Image.create!(url: 'https://validurl.com', tag_list: 'stuff', user_id: @user.id)
 
     patch image_path(image), params: { image: { tag_list: 'neat, my_tag, other_tag' } }
 
@@ -271,7 +272,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'update tag list with no tags' do
-    image = Image.create!(url: 'https://validurl.com', tag_list: 'stuff')
+    image = Image.create!(url: 'https://validurl.com', tag_list: 'stuff', user_id: @user.id)
 
     assert_no_difference 'image.tag_list.count' do
       patch image_path(image), params: { image: { tag_list: '' } }
@@ -291,12 +292,23 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
   private
 
   def create_images
-    Image.create!([{ url: @url, tag_list: 'tag4' },
-                   { url: 'http://www.validurl.com/image1.png', tag_list: 'tag1, tag3',
+    Image.create!([{ url: @url, tag_list: 'tag4', user_id: @user.id },
+                   { url: 'http://www.validurl.com/image1.png', tag_list: 'tag1, tag3', user_id: @user.id,
                      created_at: Time.zone.now - 1.day },
-                   { url: 'http://www.validurl.com/image1.png', tag_list: 'tag1, tag2',
+                   { url: 'http://www.validurl.com/image1.png', tag_list: 'tag1, tag2', user_id: @user.id,
                      created_at: Time.zone.now - 2.days },
-                   { url: 'http://www.validurl.com/image.png', tag_list: 'tag1, tag2, tag3',
+                   { url: 'http://www.validurl.com/image.png', tag_list: 'tag1, tag2, tag3', user_id: @user.id,
                      created_at: Time.zone.now - 3.days }])
+  end
+
+  def create_user_and_log_in
+    @user = User.create!(email: 'admin@email.com', password: 'password123')
+    post sessions_path,
+         params: {
+           session: {
+             email: @user.email,
+             password: @user.password
+           }
+         }
   end
 end

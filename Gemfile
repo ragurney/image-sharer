@@ -30,6 +30,7 @@ source 'https://rails-assets.org' do
 end
 gem 'validate_url'
 gem 'email_validator'
+gem 'pundit'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
@@ -55,6 +56,7 @@ group :test do
   gem 'ae_page_objects'
   gem 'capybara'
   gem 'selenium-webdriver'
+  gem 'mocha'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

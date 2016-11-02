@@ -15,4 +15,9 @@ module Loginable
   def redirect_on_authenticated
     redirect_to root_path, flash: { danger: 'Oops! You are already logged in!' } if logged_in?
   end
+
+  def save_previous_path(request)
+    session[:previous_path] = request.path
+    session[:previous_request_was_get] = request.get?.to_s
+  end
 end

@@ -2,7 +2,7 @@
 
 <p class="footer__links">
   <%= link_to 'Home', root_path %>
-  <%= link_to 'New Image', new_image_path %>
+  <%= link_to 'New Image', new_image_path if logged_in? %>
 </p>
 
 <p class="footer-company__name">Appfolio &copy; 2016</p>

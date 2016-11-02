@@ -15,7 +15,9 @@
       <div class="container">
         <section id="flash_messages">
           <% flash.each do |key, msg| %>
+            <% if %w(danger success).include?(key) %>
               <%= content_tag :div, msg, class: "alert alert-#{key}" %>
+            <% end %>
           <% end %>
         </section>
 

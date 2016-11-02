@@ -59,5 +59,14 @@ image_list = [
   %w(http://3.bp.blogspot.com/-I8-Huhs9pK4/VPf11IvsLTI/AAAAAAAABUM/bILtg5d8fEU/s1600/space-universe-wallpapers-background-images-photography-195979.jpg
      neat)
 ]
+user = User.find_by(email: 'admin@email.com')
 
-Image.create!(image_list.map { |image| { url: image[0], tag_list: image.drop(1) } })
+Image.create!(
+  image_list.map do |image|
+    {
+      url: image[0],
+      tag_list: image.drop(1),
+      user_id: user ? user.id : 1
+    }
+  end
+)

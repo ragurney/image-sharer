@@ -34,4 +34,13 @@ class LoginableTest < ActiveSupport::TestCase
   test 'logged_in should return false with no info in cookies' do
     assert_not @controller.logged_in?
   end
+
+  test 'save_previous_path should save the correct values in session' do
+    request = stub(path: '/images/new', get?: true)
+
+    @controller.save_previous_path(request)
+
+    assert_equal '/images/new', @controller.session[:previous_path]
+    assert_equal 'true', @controller.session[:previous_request_was_get]
+  end
 end
