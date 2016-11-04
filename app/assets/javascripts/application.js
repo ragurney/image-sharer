@@ -15,3 +15,10 @@
 //= require tether
 //= require bootstrap
 //= require fetch
+//= require nprogress
+//= require nprogress-turbolinks
+
+NProgress.start();
+$(document).ready(function() {
+  NProgress.done()
+});
