@@ -29,7 +29,8 @@ class ShareImageModal {
     this.$modal.on('ajax:success', (e, xhr) => {
       this.$modal.modal('hide');
       setFlashMessage('success', 'Email successfully sent!');
-    })
+      require('./animation').scrollToTop(500);
+    });
 
     this.$modal.on('ajax:error', (e, xhr) => {
       if (xhr.status === 422) {

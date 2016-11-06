@@ -37,6 +37,7 @@ class LikeButton {
           }
           else if(response.status == 401) {
             setFlashMessage('danger', 'You must log in to like images!');
+            require('./animation').scrollToTop(500)
           }
           else {
             alert("You've encountered an unsupported error. Please try again.");

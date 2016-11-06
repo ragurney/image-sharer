@@ -119,6 +119,7 @@ GEM
     nokogiri (1.6.8)
       mini_portile2 (~> 2.1.0)
       pkg-config (~> 1.1.7)
+    nprogress-rails (0.2.0.2)
     octokit (4.3.0)
       sawyer (~> 0.7.0, >= 0.5.3)
     parser (2.3.1.2)
@@ -248,6 +249,7 @@ DEPENDENCIES
   jquery-rails
   listen (~> 3.0.5)
   mocha
+  nprogress-rails
   pg
   pronto-rubocop
   puma (~> 3.0)
