@@ -4,6 +4,7 @@ Rails.application.routes.draw do
     member do
       get :share_new
       post :share
+      post :like
     end
   end
 

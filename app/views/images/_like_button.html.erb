@@ -1,0 +1,6 @@
+<%= link_to like_image_path(id: image.id),
+            class: "js-like-btn btn btn-em btn-primary image-card__likebutton
+                                       #{'image-card__liked' if liked}" do %>
+  <i> <%= fa_icon 'thumbs-o-up' %> </i>
+  <span class="js-like-count"> <%= image.likes_count %> </span>
+<% end %>

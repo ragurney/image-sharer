@@ -9,6 +9,10 @@ module PageObjects
         node.all('.image-card__tag').map(&:text)
       end
 
+      def like_count
+        node.find('.js-like-count').text
+      end
+
       def click_tag!(tag_name)
         node.find("a[href=\"/images?tag=#{tag_name}\"]").click
         window.change_to(IndexPage)
@@ -40,6 +44,10 @@ module PageObjects
       def edit_tags!
         node.click_on('Edit Tags')
         window.change_to(EditPage)
+      end
+
+      def like
+        node.find('.js-like-btn').click
       end
     end
   end
